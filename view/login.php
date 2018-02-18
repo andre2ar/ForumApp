@@ -1,5 +1,5 @@
 <div id="login">
-    <form class="form-horizontal" role="form" method="POST">
+    <form id="loginForm" class="form-horizontal" role="form" method="POST">
         <div class="row">
             <div class="col-md-3"></div>
             <div class="col-md-6">
@@ -41,6 +41,9 @@
             </div>
             <br>
         </div>
+        <div class="text-center">
+            <a href="sign_up">I haven't an account!</a>
+        </div>
     </form>
-    <button id="loginButton" type="submit" class="btn btn-primary btn-lg float-right">Login</button>
+    <button id="loginButton" form="loginForm" type="submit" class="btn btn-primary btn-lg float-right">Login</button>
 </div>

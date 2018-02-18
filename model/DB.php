@@ -21,7 +21,8 @@ class DB
         }
     }
 
-    public function add_new_user($data){
+    public function add_new_user($data)
+    {
         $sql = "INSERT INTO users(userName, userEmail, userPassword) 
                 VALUES(:username, :useremail, :userpassword)";
 
@@ -34,5 +35,18 @@ class DB
         $prepared_sql->bindParam(":userpassword", $password);
 
         return $prepared_sql->execute();
+    }
+
+    public function get_user($email)
+    {
+        $sql = "SELECT userId, userEmail, userPassword FROM users WHERE userEmail = :useremail";
+
+        $prepared_sql = $this->db_connection->prepare($sql);
+
+        $prepared_sql->bindParam(":useremail", $email);
+
+        $prepared_sql->execute();
+
+        return $prepared_sql->fetch(PDO::FETCH_ASSOC);
     }
 }

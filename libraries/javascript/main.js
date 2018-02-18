@@ -38,7 +38,7 @@ $(function () {
         });
     });
 
-    $("#loginButton").submit(function (event) {
+    $("#loginForm").submit(function (event) {
         event.preventDefault();
 
         let formData = new FormData(this);
@@ -55,8 +55,8 @@ $(function () {
             if(result.success == false)
             {
                 swal({
-                    title: "Erro",
-                    text: "Fill up the fields correctly",
+                    title: "Try again",
+                    text: "User or password incorrect",
                     icon: "error"
                 });
             }
@@ -64,16 +64,57 @@ $(function () {
             {
                 swal({
                     title: "Success",
-                    text: "You signed up successfully",
+                    text: "Successfully logged",
                     icon: "success",
                     buttons:{
-                        Login: true
+                        Ok: true
                     }
                 }).then(function () {
-                    location = 'login';
+                    location = 'home';
                 });
             }
         });
+    });
+
+    $("#login_logout_button").click(function () {
+        if($(this).hasClass('btn-secondary'))
+        {
+            swal({
+                title: "Logout",
+                text: "Are you sure that you want to logout?",
+                icon: "info",
+                buttons:{
+                    cancel: "No",
+                    Yes: true
+                }
+            }).then(function (option) {
+                if(option === 'Yes')
+                {
+                    $.ajax({
+                        method: 'POST',
+                        url: "./controller/OperationController.php",
+                        data:{
+                            operation: 'logout'
+                        }
+                    }).done(function (result) {
+                        result = JSON.parse(result);
+                        if(result.success === true)
+                        {
+                            swal({
+                                title: "Success",
+                                text: "Successfully logged out",
+                                icon: "success",
+                                buttons:{
+                                    Ok: true
+                                }
+                            }).then(function () {
+                                location.reload();
+                            });
+                        }
+                    });
+                }
+            });
+        }
     });
 
     $("#shareQuestion").submit(function (event) {
@@ -137,5 +178,21 @@ $(function () {
                 $("#signUpButton").prop("disabled", false);
             }
         }else $("#signUpButton").prop("disabled", true);
+    });
+
+    /**************************************** CSS ********************************************/
+    $("#login_logout_button").mouseover(function () {
+        if($(this).hasClass("btn-secondary"))
+        {
+            $(this).text("Logout");
+        }
+    });
+
+    $("#login_logout_button").mouseout(function () {
+        if($(this).hasClass("btn-secondary"))
+        {
+            let user = $(this).attr("data-user");
+            $(this).text(user);
+        }
     });
 });

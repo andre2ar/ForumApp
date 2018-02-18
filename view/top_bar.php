@@ -9,17 +9,34 @@
             <li class="nav-item active">
                 <a class="nav-link" href="home">Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="sign_up">Sign-up</a>
-            </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
+
+        <!--<form class="form-inline my-2 my-lg-0">
             <div class="input-group">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                 <div class="input-group-append">
                     <button class="btn btn-danger">Search</button>
                 </div>
             </div>
-        </form>
+        </form>-->
+
+        <?php
+            if(isset($_COOKIE['logged_user']))
+            {
+                $user = explode("@", $_COOKIE['logged_user'])[0];
+            }
+        ?>
+        <a href="<?php if(isset($user)) echo 'javascript:void(0)'; else echo 'login';?>">
+            <button id="login_logout_button"
+                    class="btn <?php if ($user) echo 'btn-secondary'; else echo 'btn-outline-light';?>"
+                    data-user="<?= $user ?>"
+            >
+                <?php
+                if(isset($user))
+                    echo $user;
+                else echo "Login"
+                ?>
+            </button>
+        </a>
     </div>
 </nav>
