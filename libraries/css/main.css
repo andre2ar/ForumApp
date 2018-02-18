@@ -1,0 +1,30 @@
+#shareQuestion, #login{
+    margin-top: 25px;
+}
+
+#shareQuestion input{
+    margin-bottom: 10px;
+}
+
+#shareQuestion select{
+    margin-top: 10px;
+}
+
+#shareQuestion button{
+    margin-right: 5px;
+}
+
+#signUp{
+    margin-top: 10px;
+}
+
+#signUpButton{
+    margin-bottom: 20px;
+}
+
+@media(min-width: 768px) {
+    .field-label-responsive {
+        padding-top: .5rem;
+        text-align: right;
+    }
+}
