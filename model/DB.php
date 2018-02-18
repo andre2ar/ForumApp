@@ -65,4 +65,17 @@ class DB
 
         return $prepared_sql->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function get_questions($how_many = 0, $offset = 0, $params = null)
+    {
+        if($how_many > 0)
+        {
+            $limit = " LIMIT ".$how_many;
+        }else $limit = '';
+
+        $sql = "SELECT * FROM posts ORDER BY postCreationTime DESC".$limit;
+        $prepared_sql = $this->db_connection->prepare($sql);
+        $prepared_sql->execute();
+        return $prepared_sql->fetchAll();
+    }
 }

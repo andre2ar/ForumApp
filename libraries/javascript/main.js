@@ -160,6 +160,8 @@ $(function () {
                         title: "Success",
                         text: "Successefully posted",
                         icon: "success",
+                    }).then(function () {
+                        $("#yourPostTitle").focus();
                     });
                 }
             });

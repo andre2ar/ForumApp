@@ -28,3 +28,27 @@
         text-align: right;
     }
 }
+
+.card_edit{
+    margin-bottom: 1rem;
+}
+
+.module {
+    width: 20rem;
+    overflow: hidden;
+}
+.module p {
+    margin: 0;
+}
+
+.line-clamp-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.line-clamp-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+}

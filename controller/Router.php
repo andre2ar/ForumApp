@@ -34,13 +34,13 @@ class Router
             $url = $this->clear_url($url);
 
             $intendend_place = end($url);
-            switch ($intendend_place){
-                case $this->site_name:
-                    load_view('home');
-                    break;
-                default:
-                    load_view($intendend_place, ['conection' => $this->db]);
-                    break;
+
+            if($intendend_place === $this->site_name || $intendend_place === 'home'){
+                $questions = $this->db->get_questions(15);
+                load_view('home', ['questions' => $questions]);
+            }else
+            {
+                load_view($intendend_place);
             }
         }
     }
