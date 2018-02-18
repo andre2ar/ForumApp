@@ -11,15 +11,6 @@
             </li>
         </ul>
 
-        <!--<form class="form-inline my-2 my-lg-0">
-            <div class="input-group">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <div class="input-group-append">
-                    <button class="btn btn-danger">Search</button>
-                </div>
-            </div>
-        </form>-->
-
         <?php
             if(isset($_COOKIE['logged_user']))
             {
@@ -28,8 +19,8 @@
         ?>
         <a href="<?php if(isset($user)) echo 'javascript:void(0)'; else echo 'login';?>">
             <button id="login_logout_button"
-                    class="btn <?php if ($user) echo 'btn-secondary'; else echo 'btn-outline-light';?>"
-                    data-user="<?= $user ?>"
+                    class="btn <?php if (isset($user)) echo 'btn-secondary'; else echo 'btn-outline-light';?>"
+                    data-user="<?php if(isset($user)) echo $user; ?>"
             >
                 <?php
                 if(isset($user))

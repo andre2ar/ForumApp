@@ -6,6 +6,8 @@
 include_once 'controller/Router.php';
 include_once 'libraries/php/functions.php';
 
+date_default_timezone_set('America/Sao_Paulo');
+
 $requested_uri = $_SERVER['REQUEST_URI'];
 $router = new Router('forumApp');
 

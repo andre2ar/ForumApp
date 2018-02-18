@@ -14,10 +14,10 @@ $(function () {
             contentType: false
         }).done(function (result) {
             result = JSON.parse(result);
-            if(result.success == false)
+            if(result.success === false)
             {
                 swal({
-                    title: "Erro",
+                    title: "Error",
                     text: "Fill up the fields correctly",
                     icon: "error"
                 });
@@ -117,8 +117,74 @@ $(function () {
         }
     });
 
+    /*Define previous value to fields: before login*/
+    $("#yourPostTitle").val(sessionStorage.getItem('forumAppPostTitle'));
+    $("#yourPostDetails").val(sessionStorage.getItem('forumAppPostDetails'));
+    $("#yourPostCategory").val(sessionStorage.getItem('forumAppPostCategory'));
+
+    $("#clearFields").click(function () {
+        sessionStorage.removeItem('forumAppPostTitle');
+        sessionStorage.removeItem('forumAppPostDetails');
+        sessionStorage.removeItem('forumAppPostCategory');
+    });
+
     $("#shareQuestion").submit(function (event) {
         event.preventDefault();
+
+        /* User is logged */
+        if(($("#login_logout_button").attr('data-user')).length > 0)
+        {
+            let formData = new FormData(this);
+            formData.append('operation', 'submitQuestion');
+
+            $.ajax({
+                method: "POST",
+                url: './controller/OperationController.php',
+                data: formData,
+                processData: false,
+                contentType: false
+            }).done(function (result) {
+                result = JSON.parse(result);
+                if(result.success === false)
+                {
+                    swal({
+                        title: "Error",
+                        text: "Something happen, try again later",
+                        icon: "error"
+                    });
+                }
+                else
+                {
+                    $("#clearFields").click();
+                    swal({
+                        title: "Success",
+                        text: "Successefully posted",
+                        icon: "success",
+                    });
+                }
+            });
+        }else
+        {
+            /* User need to login */
+            sessionStorage.setItem('forumAppPostTitle', $("#yourPostTitle").val());
+            sessionStorage.setItem('forumAppPostDetails', $("#yourPostDetails").val());
+            sessionStorage.setItem('forumAppPostCategory', $("#yourPostCategory").val());
+
+            swal({
+                title: "Login",
+                text: "To post you need to login first",
+                icon: "info",
+                buttons:{
+                    cancel: "No",
+                    Login: true
+                }
+            }).then(function (option) {
+                if(option === 'Login')
+                {
+                    location = 'login';
+                }
+            });
+        }
     });
 
     /********************************* VALIDATIONS *********************************************/
@@ -128,7 +194,7 @@ $(function () {
             $("#nameAlert").show();
         }else $("#nameAlert").hide();
     });
-    
+
     $("#email").keyup(function () {
         let value = this.value;
         if (validate_email(value) !== null)
@@ -136,7 +202,7 @@ $(function () {
             $("#emailAlert").hide()
         }else $("#emailAlert").show();
     });
-    
+
     function validate_email(email) {
         return email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/);
     }
@@ -160,36 +226,38 @@ $(function () {
     });
 
     /*Enable butto SIGN UP when is everything ok*/
-    $("#name, #email, #password, #password-confirm").keyup(function () {
-        let nameAlertVisible = $("#nameAlert").is(":visible"),
-            emailAlertVisible = $("#emailAlert").is(":visible"),
-            passwordlAlertVisible = $("#passwordlAlert").is(":visible"),
-            passwordConfirmAlertVisible = $("#passwordConfirmAlert").is(":visible");
+    if($("#signUpButton").length > 0)
+    {
+        $("#name, #email, #password, #password-confirm").keyup(function () {
+            let nameAlertVisible = $("#nameAlert").is(":visible"),
+                emailAlertVisible = $("#emailAlert").is(":visible"),
+                passwordlAlertVisible = $("#passwordlAlert").is(":visible"),
+                passwordConfirmAlertVisible = $("#passwordConfirmAlert").is(":visible");
 
-        if(!nameAlertVisible && !emailAlertVisible && !passwordlAlertVisible && !passwordConfirmAlertVisible)
-        {
-            let name = $("#name").val(),
-                email = $("#email").val(),
-                password = $("#password").val(),
-                passworConfirmation = $("#password-confirm").val();
-
-            if(name.length > 0 && email.length > 0 && password.length > 0 && passworConfirmation.length > 0)
+            if(!nameAlertVisible && !emailAlertVisible && !passwordlAlertVisible && !passwordConfirmAlertVisible)
             {
-                $("#signUpButton").prop("disabled", false);
-            }
-        }else $("#signUpButton").prop("disabled", true);
-    });
+                let name = $("#name").val(),
+                    email = $("#email").val(),
+                    password = $("#password").val(),
+                    passworConfirmation = $("#password-confirm").val();
 
+                if(name.length > 0 && email.length > 0 && password.length > 0 && passworConfirmation.length > 0)
+                {
+                    $("#signUpButton").prop("disabled", false);
+                }
+            }else $("#signUpButton").prop("disabled", true);
+        });
+    }
     /**************************************** CSS ********************************************/
     $("#login_logout_button").mouseover(function () {
-        if($(this).hasClass("btn-secondary"))
+        if(($(this).attr('data-user')).length > 0 )
         {
             $(this).text("Logout");
         }
     });
 
     $("#login_logout_button").mouseout(function () {
-        if($(this).hasClass("btn-secondary"))
+        if(($(this).attr('data-user')).length > 0)
         {
             let user = $(this).attr("data-user");
             $(this).text(user);

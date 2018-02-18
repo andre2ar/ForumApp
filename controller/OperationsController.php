@@ -18,6 +18,20 @@ class OperationsController
         $operation = $data['operation'];
 
         switch ($operation){
+            case 'submitQuestion':
+                if(
+                    !isset($data['questionTitle']) ||
+                    !isset($data['questionDetails']) ||
+                    !isset($data['category'])
+                )
+                {
+                    return json_encode(['success' => false]);
+                }else
+                {
+                    $result = $this->db_connection->submit_question($data);
+                    return json_encode(['success' => $result]);
+                }
+                break;
             case 'login':
                 if(
                     !isset($data['email']) ||
