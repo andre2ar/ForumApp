@@ -1,4 +1,20 @@
 $(function () {
+    $(window).scroll(function (event) {
+        let distance_top = distance_to_top(".card_edit:last"),
+            screen_height = window.innerHeight;
+
+        if(distance_top <= screen_height)
+        {
+
+        }
+    });
+
+    function distance_to_top(element) {
+        element = $(element);
+
+        let cordinates = $(element)[0].getBoundingClientRect();
+        return cordinates.y;
+    }
     /********************************* AJAX **************************************************/
     $("#signUpForm").submit(function (event) {
         event.preventDefault();

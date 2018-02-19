@@ -50,7 +50,7 @@
 
 <div class="row">
     <h1>Questions</h1>
-    <div class="col-lg-12">
+    <div id="questions" class="col-lg-12">
         <div class="row">
         <?php
         /***************** Enter point ***************/
