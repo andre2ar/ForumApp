@@ -155,6 +155,7 @@ $(function () {
                 }
                 else
                 {
+                    add_question_board($("#yourPostTitle").val(), $("#yourPostDetails").val(), $("#yourPostCategory").val());
                     $("#clearFields").click();
                     swal({
                         title: "Success",
@@ -188,6 +189,17 @@ $(function () {
             });
         }
     });
+
+    function add_question_board(title, details, category) {
+        $(".card_edit:first").clone()
+            .insertAfter(".card_edit:first");
+
+        $(".card_edit:eq(1) h5").text(title);
+        $(".card_edit:eq(1) p").text(details);
+        $(".card_edit:eq(1) .category").html('<i class="fa fa-compass"></i>'+category);
+
+        $(".card_edit:eq(1)").show("slow");
+    }
 
     /********************************* VALIDATIONS *********************************************/
     $("#name").keyup(function () {
@@ -254,7 +266,7 @@ $(function () {
     $("#login_logout_button").mouseover(function () {
         if(($(this).attr('data-user')).length > 0 )
         {
-            $(this).text("Logout");
+            $(this).html("<i class='fas fa-sign-out-alt'></i> Logout");
         }
     });
 
@@ -262,7 +274,7 @@ $(function () {
         if(($(this).attr('data-user')).length > 0)
         {
             let user = $(this).attr("data-user");
-            $(this).text(user);
+            $(this).html(user);
         }
     });
 });

@@ -24,7 +24,7 @@
             <div class="col-md-3">
                 <div id="nameAlert" class="form-control-feedback">
                         <span class="text-danger align-middle">
-                            Your name need to have at least 3 characters
+                            <i class="fa fa-close">Your name need to have at least 3 characters</i>
                         </span>
                 </div>
             </div>
@@ -46,7 +46,7 @@
             <div  class="col-md-3">
                 <div id="emailAlert" class="form-control-feedback" style="display: none;">
                         <span class="text-danger align-middle">
-                            Invalid e-mail
+                            <i class="fa fa-close">Invalid e-mail</i>
                         </span>
                 </div>
             </div>

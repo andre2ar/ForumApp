@@ -45,5 +45,5 @@
             <a href="sign_up">I haven't an account!</a>
         </div>
     </form>
-    <button id="loginButton" form="loginForm" type="submit" class="btn btn-primary btn-lg float-right">Login</button>
+    <button id="loginButton" form="loginForm" type="submit" class="btn btn-primary btn-lg float-right"><i class="fas fa-sign-in-alt"></i> Login</button>
 </div>

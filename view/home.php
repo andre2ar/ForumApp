@@ -40,7 +40,7 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-lg float-right">Share</button>
+            <button type="submit" class="btn btn-primary btn-lg float-right">Post <i class="far fa-share-square"></i></button>
             <button id="clearFields" type="reset" class="btn btn-outline-secondary btn-lg float-right">Reset</button>
         </form>
 
@@ -53,30 +53,13 @@
     <div class="col-lg-12">
         <div class="row">
         <?php
+        /***************** Enter point ***************/
+        gen_card_box('', '', '', 0, 'none');
+
         $questions = $params['questions'];
         foreach($questions as $question)
         {
-            ?>
-            <div class="col-lg-4 card_edit">
-                <div class="card" style="width: 23rem; height: 18rem">
-                    <div class="card-body">
-                        <div style="height: 3rem;">
-                            <h5 class="card-title module line-clamp-title"><?php echo $question['postTitle']; ?></h5>
-                        </div>
-
-                        <p class="card-text module line-clamp-text" style="height: 9.3rem">
-                            <?php echo $question['postDetails']; ?>
-                        </p>
-                        <div>
-                            <span class="badge badge-secondary">4 answers</span>
-                            <a href="#" class="card-link float-right">Open</a>
-                        </div>
-
-
-                    </div>
-                </div>
-            </div>
-            <?php
+            gen_card_box($question['postTitle'], $question['postDetails'], $question['postCategory']);
         }
         ?>
         </div>

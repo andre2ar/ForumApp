@@ -7,7 +7,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="home">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="home"><i class="fa fa-home"></i> Home <span class="sr-only">(current)</span></a>
             </li>
         </ul>
 
@@ -20,12 +20,15 @@
         <a href="<?php if(isset($user)) echo 'javascript:void(0)'; else echo 'login';?>">
             <button id="login_logout_button"
                     class="btn <?php if (isset($user)) echo 'btn-secondary'; else echo 'btn-outline-light';?>"
-                    data-user="<?php if(isset($user)) echo $user; ?>"
+                    data-user="<?php if(isset($user)) {echo "<i class='fas fa-user'></i> "; echo $user;} ?>"
             >
                 <?php
                 if(isset($user))
+                {
+                    echo "<i class='fas fa-user'></i> ";
                     echo $user;
-                else echo "Login"
+                }
+                else echo '<i class="fas fa-sign-in-alt"></i> Login';
                 ?>
             </button>
         </a>
