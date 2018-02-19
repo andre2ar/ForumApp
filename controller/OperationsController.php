@@ -18,6 +18,9 @@ class OperationsController
         $operation = $data['operation'];
 
         switch ($operation){
+	        case 'getMoreQuestions':
+
+	        	break;
             case 'submitQuestion':
                 if(
                     !isset($data['questionTitle']) ||

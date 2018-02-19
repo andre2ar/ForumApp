@@ -1,13 +1,24 @@
 $(function () {
-    $(window).scroll(function (event) {
+    $(window).on('scroll', infinity_scroll);
+
+    function infinity_scroll() {
         let distance_top = distance_to_top(".card_edit:last"),
             screen_height = window.innerHeight;
 
         if(distance_top <= screen_height)
         {
-
+            $(window).off("scroll");
+            $.ajax({
+                method: "POST",
+                url: './controller/OperationController.php',
+                data: {
+                    operation: 'getMoreQuestions'
+                }
+            }).done(function () {
+                $(window).on("scroll", infinity_scroll);
+            });
         }
-    });
+    }
 
     function distance_to_top(element) {
         element = $(element);
