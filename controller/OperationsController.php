@@ -55,7 +55,6 @@ class OperationsController
                     return json_encode(['success' => false]);
                 }else
                 {
-
                     $userDetails = $this->dbConnection->getUser($data['email']);
                     if(password_verify($data['password'], $userDetails['userPassword']))
                     {

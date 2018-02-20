@@ -30,9 +30,9 @@ CREATE TABLE IF NOT EXISTS `forumapp`.`users` (
   `userPassword` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`userId`),
   UNIQUE INDEX `idusers_UNIQUE` (`userId` ASC))
-ENGINE = InnoDB
-AUTO_INCREMENT = 2
-DEFAULT CHARACTER SET = utf8;
+  ENGINE = InnoDB
+  AUTO_INCREMENT = 2
+  DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
@@ -51,13 +51,13 @@ CREATE TABLE IF NOT EXISTS `forumapp`.`questions` (
   UNIQUE INDEX `postId_UNIQUE` (`questionId` ASC),
   INDEX `fk_posts_users_idx` (`questionOwner` ASC),
   CONSTRAINT `fk_posts_users`
-    FOREIGN KEY (`questionOwner`)
-    REFERENCES `forumapp`.`users` (`userId`)
+  FOREIGN KEY (`questionOwner`)
+  REFERENCES `forumapp`.`users` (`userId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
-AUTO_INCREMENT = 20
-DEFAULT CHARACTER SET = utf8;
+  ENGINE = InnoDB
+  AUTO_INCREMENT = 20
+  DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
@@ -66,29 +66,29 @@ DEFAULT CHARACTER SET = utf8;
 DROP TABLE IF EXISTS `forumapp`.`answers` ;
 
 CREATE TABLE IF NOT EXISTS `forumapp`.`answers` (
-  `answertId` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `answerId` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `answerText` MEDIUMTEXT NOT NULL,
   `answerOwner` INT(10) UNSIGNED NOT NULL,
   `answerInQuestion` INT(10) UNSIGNED NOT NULL,
   `answerCreationTime` TIMESTAMP NULL,
   PRIMARY KEY (`answerId`),
-  UNIQUE INDEX `commentId_UNIQUE` (`answertId` ASC),
+  UNIQUE INDEX `commentId_UNIQUE` (`answerId` ASC),
   INDEX `fk_comments_users1_idx` (`answerOwner` ASC),
   INDEX `fk_comments_posts1_idx` (`answerInQuestion` ASC),
-  INDEX `commentId` (`answertId` ASC),
+  INDEX `commentId` (`answerId` ASC),
   CONSTRAINT `fk_comments_posts1`
-    FOREIGN KEY (`answerInQuestion`)
-    REFERENCES `forumapp`.`questions` (`questionId`)
+  FOREIGN KEY (`answerInQuestion`)
+  REFERENCES `forumapp`.`questions` (`questionId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_comments_users1`
-    FOREIGN KEY (`answerOwner`)
-    REFERENCES `forumapp`.`users` (`userId`)
+  FOREIGN KEY (`answerOwner`)
+  REFERENCES `forumapp`.`users` (`userId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
-AUTO_INCREMENT = 14
-DEFAULT CHARACTER SET = utf8;
+  ENGINE = InnoDB
+  AUTO_INCREMENT = 14
+  DEFAULT CHARACTER SET = utf8;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
