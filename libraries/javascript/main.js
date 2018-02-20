@@ -12,14 +12,34 @@ $(function () {
                 method: "POST",
                 url: './controller/OperationController.php',
                 data: {
-                    operation: 'getMoreQuestions'
+                    operation: 'getMoreQuestions',
+                    after: $(".card_edit").length - 1
                 }
-            }).done(function () {
-                $(window).on("scroll", infinity_scroll);
+            }).done(function (result) {
+                result = JSON.parse(result);
+
+                if(result.success === true)
+                {
+                    add_questions(result.questions);
+                    $(window).on("scroll", infinity_scroll);
+                }
             });
         }
     }
 
+    function add_questions(questions) {
+        questions.forEach(function(currentValue, index){
+            $(".card_edit:first").clone()
+                .insertAfter(".card_edit:last");
+
+            let lastCard = $(".card_edit:last");
+            $(lastCard).find('h5').text(currentValue.postTitle);
+            $(lastCard).find("p").text(currentValue.postDetails);
+            $(lastCard).find(".category").html('<i class="fa fa-compass"></i>'+currentValue.postCategory);
+
+            $(lastCard).show("slow");
+        });
+    }
     function distance_to_top(element) {
         element = $(element);
 

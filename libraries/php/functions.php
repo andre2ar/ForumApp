@@ -9,7 +9,7 @@ function load_model($model_name, $params = null)
     include './controller/'.$model_name.'.php';
 }
 
-function gen_card_box($title, $details, $category, $comments_count = 0, $visibility = 'block')
+function gen_card_box($title, $details, $category, $question_id, $comments_count = 0, $visibility = 'block')
 {
 	?>
 	<div class="col-lg-4 card_edit" style="display: <?php echo $visibility;?>">
@@ -29,7 +29,8 @@ function gen_card_box($title, $details, $category, $comments_count = 0, $visibil
 						echo $category;
 						?>
                     </span>
-					<a href="#" class="card-link float-right">Open</a>
+
+					<a href="open_question?question_id=<?php echo $question_id; ?>" class="card-link float-right">Open</a>
 				</div>
 			</div>
 		</div>

@@ -66,16 +66,18 @@ class DB
         return $prepared_sql->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function get_questions($how_many = 0, $offset = 0, $params = null)
+    public function get_questions($offset = 0, $how_many = 15, $params = null)
     {
-        if($how_many > 0)
-        {
-            $limit = " LIMIT ".$how_many;
-        }else $limit = '';
+        $limit = " LIMIT ".$how_many;
+	    if($offset != 0)
+	    {
+	    	$offset = " OFFSET ".$offset;
+	    }else $offset = '';
 
-        $sql = "SELECT * FROM posts ORDER BY postCreationTime DESC".$limit;
+        $sql = "SELECT * FROM posts ORDER BY postCreationTime DESC".$limit.$offset;
         $prepared_sql = $this->db_connection->prepare($sql);
         $prepared_sql->execute();
-        return $prepared_sql->fetchAll();
+
+        return $prepared_sql->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -54,12 +54,12 @@
         <div class="row">
         <?php
         /***************** Enter point ***************/
-        gen_card_box('', '', '', 0, 'none');
+        gen_card_box('', '', '', "", 0, 'none');
 
         $questions = $params['questions'];
         foreach($questions as $question)
         {
-            gen_card_box($question['postTitle'], $question['postDetails'], $question['postCategory']);
+            gen_card_box($question['postTitle'], $question['postDetails'], $question['postCategory'], $question['postId']);
         }
         ?>
         </div>

@@ -19,7 +19,10 @@ class OperationsController
 
         switch ($operation){
 	        case 'getMoreQuestions':
-
+				$questions = $this->db_connection->get_questions($data['after']);
+				if($questions)
+					return json_encode(['success' => true, 'questions' => $questions]);
+				else return json_encode(['success' => false]);
 	        	break;
             case 'submitQuestion':
                 if(

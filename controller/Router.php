@@ -36,9 +36,15 @@ class Router
             $intendend_place = end($url);
 
             if($intendend_place === $this->site_name || $intendend_place === 'home'){
-                $questions = $this->db->get_questions(15);
+                $questions = $this->db->get_questions();
                 load_view('home', ['questions' => $questions]);
-            }else
+            }else if(strstr($intendend_place, 'open_question'))
+            {
+            	$question_id = explode("=", $intendend_place)[1];
+            	$intendend_place = explode("?", $intendend_place)[0];
+	            load_view($intendend_place);
+            }
+            else
             {
                 load_view($intendend_place);
             }
