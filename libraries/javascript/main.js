@@ -12,17 +12,48 @@ $(function () {
             processData: false,
             contentType: false
         }).done(function (result) {
-            $("#answerText").val('');
-            swal({
-                title: "Success",
-                text: "You answered this question",
-                icon: "success",
-            });
+            result = JSON.parse(result);
+            console.log(result);
+            let answerTextItem = $("#answerText");
+
+            if(result.commentId !== false)
+            {
+                answerAddToPage(result['userId'], result['userName'], $(answerTextItem).val(), result.commentId);
+                $(answerTextItem).val('');
+
+                swal({
+                    title: "Success",
+                    text: "You answered this question",
+                    icon: "success",
+                });
+            }else
+            {
+                swal({
+                    title: "Error",
+                    text: "Unfortunely your answer can't be posted",
+                    icon: "error",
+                });
+            }
         });
     });
+    
+    function answerAddToPage(userId, userName, answerText, answerId)
+    {
+        $(".answer-box:first").clone()
+            .insertAfter(".answer-box:first");
+
+        let newComment = $(".answer-box:eq(1)");
+
+        $(newComment).find("h4").text(userName);
+        $(newComment).find("p").text(answerText);
+        $(newComment).attr("data-answer-id", answerId);
+        $(newComment).attr("data-user-id", userId);
+
+        $(newComment).show("slow");
+    }
 
     $("#answerQuestion").click(function () {
-        if(($('#login_logout_button').attr('data-user')).length > 0)
+        if(($('#loginLogoutButton').attr('data-user')).length > 0)
         {
             $("#answerSpace").show('fast');
         }else
@@ -44,13 +75,13 @@ $(function () {
         }
     });
 
-    $(window).on('scroll', infinity_scroll);
+    $(window).on('scroll', infinityScroll);
 
-    function infinity_scroll() {
-        let distance_top = distance_to_top(".card_edit:last"),
-            screen_height = window.innerHeight;
+    function infinityScroll() {
+        let distanceTop = distanceToTop(".card_edit:last"),
+            screenHeight = window.innerHeight;
 
-        if(distance_top <= screen_height)
+        if(distanceTop <= screenHeight)
         {
             $(window).off("scroll");
             $.ajax({
@@ -66,7 +97,7 @@ $(function () {
                 if(result.success === true)
                 {
                     add_questions(result.questions);
-                    $(window).on("scroll", infinity_scroll);
+                    $(window).on("scroll", infinityScroll);
                 }
             });
         }
@@ -78,15 +109,15 @@ $(function () {
                 .insertAfter(".card_edit:last");
 
             let lastCard = $(".card_edit:last");
-            $(lastCard).find('h5').text(currentValue.postTitle);
-            $(lastCard).find("p").text(currentValue.postDetails);
-            $(lastCard).find(".category").html('<i class="fa fa-compass"></i>'+currentValue.postCategory);
-            $(lastCard).find("a").prop("href", 'open_question?question_id='+currentValue.postId);
+            $(lastCard).find('h5').text(currentValue.questionTitle);
+            $(lastCard).find("p").text(currentValue.questionDetails);
+            $(lastCard).find(".category").html('<i class="fa fa-compass"></i> '+currentValue.questionCategory);
+            $(lastCard).find("a").prop("href", 'open_question?question_id='+currentValue.questionId);
 
             $(lastCard).show("slow");
         });
     }
-    function distance_to_top(element) {
+    function distanceToTop(element) {
         element = $(element);
 
         let cordinates = $(element)[0].getBoundingClientRect();
@@ -169,7 +200,7 @@ $(function () {
         });
     });
 
-    $("#login_logout_button").click(function () {
+    $("#loginLogoutButton").click(function () {
         if($(this).hasClass('btn-secondary'))
         {
             swal({
@@ -225,7 +256,7 @@ $(function () {
         event.preventDefault();
 
         /* User is logged */
-        if(($("#login_logout_button").attr('data-user')).length > 0)
+        if(($("#loginLogoutButton").attr('data-user')).length > 0)
         {
             let formData = new FormData(this);
             formData.append('operation', 'submitQuestion');
@@ -248,7 +279,7 @@ $(function () {
                 }
                 else
                 {
-                    add_question_board($("#yourPostTitle").val(), $("#yourPostDetails").val(), $("#yourPostCategory").val(), result.questionId);
+                    addQuestionBoard($("#yourPostTitle").val(), $("#yourPostDetails").val(), $("#yourPostCategory").val(), result.questionId);
                     $("#clearFields").click();
                     swal({
                         title: "Success",
@@ -283,18 +314,18 @@ $(function () {
         }
     });
 
-    function add_question_board(title, details, category, id) {
+    function addQuestionBoard(title, details, category, id) {
         $(".card_edit:first").clone()
             .insertAfter(".card_edit:first");
 
-        let new_card = $(".card_edit:eq(1)");
+        let newCard = $(".card_edit:eq(1)");
 
-        $(new_card).find("h5").text(title);
-        $(new_card).find("p").text(details);
-        $(new_card).find(".category").html('<i class="fa fa-compass"></i>' + category);
-        $(new_card).find("a").prop("href", 'open_question?question_id=' + id);
+        $(newCard).find("h5").text(title);
+        $(newCard).find("p").text(details);
+        $(newCard).find(".category").html('<i class="fa fa-compass"></i> ' + category);
+        $(newCard).find("a").prop("href", 'open_question?question_id=' + id);
 
-        $(new_card).show("slow");
+        $(newCard).show("slow");
     }
 
     /********************************* VALIDATIONS *********************************************/
@@ -307,13 +338,13 @@ $(function () {
 
     $("#email").keyup(function () {
         let value = this.value;
-        if (validate_email(value) !== null)
+        if (validateEmail(value) !== null)
         {
             $("#emailAlert").hide()
         }else $("#emailAlert").show();
     });
 
-    function validate_email(email) {
+    function validateEmail(email) {
         return email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/);
     }
 
@@ -359,14 +390,14 @@ $(function () {
         });
     }
     /**************************************** CSS ********************************************/
-    $("#login_logout_button").mouseover(function () {
+    $("#loginLogoutButton").mouseover(function () {
         if(($(this).attr('data-user')).length > 0 )
         {
             $(this).html("<i class='fas fa-sign-out-alt'></i> Logout");
         }
     });
 
-    $("#login_logout_button").mouseout(function () {
+    $("#loginLogoutButton").mouseout(function () {
         if(($(this).attr('data-user')).length > 0)
         {
             let user = $(this).attr("data-user");

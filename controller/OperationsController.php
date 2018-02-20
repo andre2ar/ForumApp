@@ -7,10 +7,10 @@ define("YEAR", MONTH*12);
 
 class OperationsController
 {
-    public $db_connection;
-    public function __construct($db_connection)
+    public $dbConnection;
+    public function __construct($dbConnection)
     {
-        $this->db_connection = $db_connection;
+        $this->dbConnection = $dbConnection;
     }
 
     public function doOperation($data)
@@ -19,14 +19,14 @@ class OperationsController
 
         switch ($operation){
 	        case 'answerQuestion':
-	        	if(isset($_SESSION) && isset($_SESSION['user_id']))
+	        	if(isset($_SESSION) && isset($_SESSION['forumAppUserId']))
 		        {
-		        	$comment_id = $this->db_connection->answer_question($data['answerText'], $data['question_id']);
-		        	return json_encode(['comment_id' => $comment_id]);
+		        	$comment_id = $this->dbConnection->answerQuestion($data['answerText'], $data['questionId']);
+		        	return json_encode(['userName' => explode("@",  $_SESSION['forumAppLoggedUser'])[0], 'userId' => $_SESSION['forumAppUserId'],'commentId' => $comment_id]);
 		        }
 	        	break;
 	        case 'getMoreQuestions':
-				$questions = $this->db_connection->get_questions($data['after']);
+				$questions = $this->dbConnection->getQuestions($data['after']);
 				if($questions)
 					return json_encode(['success' => true, 'questions' => $questions]);
 				else return json_encode(['success' => false]);
@@ -35,13 +35,13 @@ class OperationsController
                 if(
                     !isset($data['questionTitle']) ||
                     !isset($data['questionDetails']) ||
-                    !isset($data['category'])
+                    !isset($data['questionCategory'])
                 )
                 {
-                    return json_encode(['success' => false]);
+                    return json_encode(['questionId' => false]);
                 }else
                 {
-                    $result = $this->db_connection->submit_question($data);
+                    $result = $this->dbConnection->submitQuestion($data);
                     return json_encode(['questionId' => $result]);
                 }
                 break;
@@ -56,14 +56,14 @@ class OperationsController
                 }else
                 {
 
-                    $userDetails = $this->db_connection->get_user($data['email']);
+                    $userDetails = $this->dbConnection->getUser($data['email']);
                     if(password_verify($data['password'], $userDetails['userPassword']))
                     {
-                        setcookie("logged_user", $data['email'], time() + MONTH, '/');
-                        setcookie("user_id", $userDetails['userId'], time() + MONTH, '/');
+                        setcookie("forumAppLoggedUser", $data['email'], time() + MONTH, '/');
+                        setcookie("forumAppUserId", $userDetails['userId'], time() + MONTH, '/');
 
-                        $_SESSION['logged_user'] = $data['email'];
-                        $_SESSION['user_id'] = $userDetails['userId'];
+                        $_SESSION['forumAppLoggedUser'] = $data['email'];
+                        $_SESSION['forumAppUserId'] = $userDetails['userId'];
 
                         return json_encode(['success' => true]);
                     }
@@ -74,15 +74,15 @@ class OperationsController
                 }
                 break;
             case 'logout':
-                if(isset($_SESSION['logged_user']) || isset($_COOKIE['logged_user'])){
-                    unset($_SESSION['logged_user']);
-                    unset($_SESSION['user_id']);
+                if(isset($_SESSION['forumAppLoggedUser']) || isset($_COOKIE['forumAppLoggedUser'])){
+                    unset($_SESSION['forumAppLoggedUser']);
+                    unset($_SESSION['forumAppUserId']);
 
-                    unset($_COOKIE['logged_user']);
-                    unset($_COOKIE['user_id']);
+                    unset($_COOKIE['forumAppLoggedUser']);
+                    unset($_COOKIE['forumAppUserId']);
 
-                    setcookie('logged_user', '', time() -1, '/');
-                    setcookie('user_id', '', time() -1, '/');
+                    setcookie('forumAppLoggedUser', '', time() -1, '/');
+                    setcookie('forumAppUserId', '', time() -1, '/');
 
                     return json_encode(['success' => true]);
                 }else
@@ -104,7 +104,7 @@ class OperationsController
                     return json_encode(['success' => false]);
                 }else
                 {
-                    $result = $this->db_connection->add_new_user($data);
+                    $result = $this->dbConnection->addNewUser($data);
                     return json_encode(['success' => $result]);
                 }
 
@@ -113,5 +113,5 @@ class OperationsController
     }
 }
 
-$operationController = new OperationsController($params['db_connection']);
+$operationController = new OperationsController($params['dbConnection']);
 echo $operationController->doOperation($_POST);

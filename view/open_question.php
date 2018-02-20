@@ -1,16 +1,16 @@
 <?php
 $question = $params['question'];
-//print_r($question);
+$answers  = $params['comments'];
 ?>
 <div class="row">
     <div class="col-lg-12">
         <h1 class="text-center">
-		    <?php echo $question['postTitle'];?>
+		    <?php echo $question['questionTitle'];?>
         </h1>
         <hr>
 
-        <p class="text-justify" style="min-height: 10rem;">
-            <?php echo $question['postDetails']?>
+        <p class="text-justify show-question-details">
+            <?php echo $question['questionDetails']?>
         </p>
         <button id="answerQuestion" type="button" class="btn btn-primary float-right">
             <i class="fas fa-reply"></i> Answer
@@ -23,7 +23,7 @@ $question = $params['question'];
 
                     <button type="submit" class="btn btn-primary btn-sm float-right">Post answer <i class="far fa-share-square"></i></button>
                 </div>
-                <input type="hidden" name="question_id" value="<?php echo $question['postId'] ?>">
+                <input type="hidden" name="questionId" value="<?php echo $question['questionId'] ?>">
             </form>
         </div>
     </div>
@@ -31,8 +31,15 @@ $question = $params['question'];
 
 <div class="row">
     <div class="col-lg-12">
-        <h3>Answers</h3>
+        <h3>Answers</h3><br>
+        <?php
+        genAnswerBox('', '','', '', 'none');
+        foreach ($answers as $answer)
+        {
+	        genAnswerBox($answer['userId'],explode("@", $answer['userEmail'])[0], $answer['answerText'], $answer['answerId']);
+        }
 
+        ?>
         <div class="alert alert-primary text-center" role="alert" style="display: none;">
             Be the first to <a class="alert-link">answer</a> this question!
         </div>

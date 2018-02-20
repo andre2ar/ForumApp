@@ -60,3 +60,12 @@
 #answerForm button{
     margin-top: 0.6rem;
 }
+
+.show-question-details{
+    min-height: 10rem;
+    border: 1px solid rgba(0,0,0,.1);
+    border-top: none;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 0 2.5rem 2.5rem 2.5rem;
+}

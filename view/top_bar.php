@@ -12,13 +12,13 @@
         </ul>
 
         <?php
-            if(isset($_COOKIE['logged_user']))
+            if(isset($_COOKIE['forumAppLoggedUser']))
             {
-                $user = explode("@", $_COOKIE['logged_user'])[0];
+                $user = explode("@", $_COOKIE['forumAppLoggedUser'])[0];
             }
         ?>
         <a href="<?php if(isset($user)) echo 'javascript:void(0)'; else echo 'login';?>">
-            <button id="login_logout_button"
+            <button id="loginLogoutButton"
                     class="btn <?php if (isset($user)) echo 'btn-secondary'; else echo 'btn-outline-light';?>"
                     data-user="<?php if(isset($user)) {echo "<i class='fas fa-user'></i> "; echo $user;} ?>"
             >

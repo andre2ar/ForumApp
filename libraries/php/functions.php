@@ -1,15 +1,15 @@
 <?php
-function load_view($view_name, $params = null)
+function loadView($view_name, $params = null)
 {
     include './view/site.php';
 }
 
-function load_model($model_name, $params = null)
+function loadModel($model_name, $params = null)
 {
     include './controller/'.$model_name.'.php';
 }
 
-function gen_card_box($title, $details, $category, $question_id, $comments_count = 0, $visibility = 'block')
+function genQuestionBox($title, $details, $category, $question_id, $comments_count = 0, $visibility = 'block')
 {
 	?>
 	<div class="col-lg-4 card_edit" style="display: <?php echo $visibility;?>">
@@ -36,4 +36,17 @@ function gen_card_box($title, $details, $category, $question_id, $comments_count
 		</div>
 	</div>
 	<?php
+}
+
+function genAnswerBox($userId, $userName, $answerText, $answerId, $visibility = 'block')
+{
+    ?>
+    <div class="answer-box" data-answer-id="<?php echo $answerId; ?>" data-user-id="<?php echo $userId; ?>" style="display: <?php echo $visibility; ?>">
+        <h4><?php echo $userName; ?></h4>
+        <p>
+            <?php echo $answerText; ?>
+        </p>
+        <hr>
+    </div>
+    <?php
 }

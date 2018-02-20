@@ -2,95 +2,94 @@
 
 class DB
 {
-    private $db_host, $db_user, $db_password, $db_name, $db_connection;
+    private $dbHost, $dbUser, $dbPassword, $dbName, $dbConnection;
 
-    public function __construct($db_host, $db_user, $db_password, $db_name)
+    public function __construct($dbHost, $dbUser, $dbPassword, $dbName)
     {
-        $this->db_host = $db_host;
-        $this->db_user = $db_user;
-        $this->db_password = $db_password;
-        $this->db_name = $db_name;
+        $this->dbHost     = $dbHost;
+        $this->dbUser     = $dbUser;
+        $this->dbPassword = $dbPassword;
+        $this->dbName     = $dbName;
 
         try
         {
-            $param = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8');
-            $this->db_connection = new PDO('mysql:host='.$this->db_host.'; dbname='.$this->db_name, $this->db_user, $this->db_password, $param);
+            $param              = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8');
+            $this->dbConnection = new PDO( 'mysql:host=' . $this->dbHost . '; dbname=' . $this->dbName, $this->dbUser, $this->dbPassword, $param);
         }catch(Exception $e)
         {
             print $e->getMessage();
         }
     }
 
-    public function answer_question($commentText, $questionId)
+    public function answerQuestion($answerText, $questionId)
     {
-    	$sql = "INSERT INTO comments(commentText, commentOwner, commentInPost)
-				VALUES (:commentText, :commentOwner, :commentInPost)";
+    	$sql = "INSERT INTO answers(answerText, answerOwner, answerInQuestion, answerCreationTime)
+				VALUES (:answerText, :answerOwner, :answerInQuestion, CURRENT_TIMESTAMP)";
 
-    	$prepared_sql = $this->db_connection->prepare($sql);
+    	$preparedSQL = $this->dbConnection->prepare($sql);
 
-	    $prepared_sql->bindParam(':commentText', $commentText);
-	    $prepared_sql->bindParam(':commentOwner', $_SESSION['user_id']);
-	    $prepared_sql->bindParam(':commentInPost', $questionId);
+	    $preparedSQL->bindParam(':answerText', $answerText);
+	    $preparedSQL->bindParam(':answerOwner', $_SESSION['forumAppUserId']);
+	    $preparedSQL->bindParam(':answerInQuestion', $questionId);
 
-	    if($prepared_sql->execute())
+	    if($preparedSQL->execute())
 	    {
-		    $questionId = $this->db_connection->lastInsertId();
+		    $questionId = $this->dbConnection->lastInsertId();
 	    }else $questionId = false;
 
 	    return $questionId;
     }
 
-    public function submit_question($data)
+    public function submitQuestion($data)
     {
-
-        $sql = "INSERT INTO posts(postTitle, postDetails, postCategory, postOwner, postCreationTime) 
+        $sql = "INSERT INTO questions(questionTitle, questionDetails, questionCategory, questionOwner, questionCreationTime) 
                 VALUES (:questionTitle, :questionDetails, :questionCategory, :questionOwner, CURRENT_TIMESTAMP)";
 
-        $prepared_sql = $this->db_connection->prepare($sql);
+        $preparedSQL = $this->dbConnection->prepare($sql);
 
-        $prepared_sql->bindParam(':questionTitle', $data['questionTitle']);
-        $prepared_sql->bindParam(':questionDetails', $data['questionDetails']);
-        $prepared_sql->bindParam(':questionCategory', $data['category']);
-        $prepared_sql->bindParam(':questionOwner', $_SESSION['user_id']);
+        $preparedSQL->bindParam(':questionTitle', $data['questionTitle']);
+        $preparedSQL->bindParam(':questionDetails', $data['questionDetails']);
+        $preparedSQL->bindParam(':questionCategory', $data['questionCategory']);
+        $preparedSQL->bindParam(':questionOwner', $_SESSION['forumAppUserId']);
 
-        if($prepared_sql->execute())
+        if($preparedSQL->execute())
         {
-        	$questionId = $this->db_connection->lastInsertId();
+        	$questionId = $this->dbConnection->lastInsertId();
         }else $questionId = false;
 
         return $questionId;
     }
 
-    public function add_new_user($data)
+    public function addNewUser($data)
     {
         $sql = "INSERT INTO users(userName, userEmail, userPassword) 
                 VALUES(:username, :useremail, :userpassword)";
 
-        $prepared_sql = $this->db_connection->prepare($sql);
+        $preparedSQL = $this->dbConnection->prepare($sql);
 
         $password = password_hash($data['password'], PASSWORD_BCRYPT);
 
-        $prepared_sql->bindParam(":username", $data['name']);
-        $prepared_sql->bindParam(":useremail", $data['email']);
-        $prepared_sql->bindParam(":userpassword", $password);
+        $preparedSQL->bindParam(":username", $data['name']);
+        $preparedSQL->bindParam(":useremail", $data['email']);
+        $preparedSQL->bindParam(":userpassword", $password);
 
-        return $prepared_sql->execute();
+        return $preparedSQL->execute();
     }
 
-    public function get_user($email)
+    public function getUser($email)
     {
         $sql = "SELECT userId, userEmail, userPassword FROM users WHERE userEmail = :useremail";
 
-        $prepared_sql = $this->db_connection->prepare($sql);
+        $preparedSQL = $this->dbConnection->prepare($sql);
 
-        $prepared_sql->bindParam(":useremail", $email);
+        $preparedSQL->bindParam(":useremail", $email);
 
-        $prepared_sql->execute();
+        $preparedSQL->execute();
 
-        return $prepared_sql->fetch(PDO::FETCH_ASSOC);
+        return $preparedSQL->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function get_questions($offset = 0, $how_many = 15, $params = null)
+    public function getQuestions($offset = 0, $how_many = 15, $params = null)
     {
         $limit = " LIMIT ".$how_many;
 	    if($offset != 0)
@@ -98,20 +97,32 @@ class DB
 	    	$offset = " OFFSET ".$offset;
 	    }else $offset = '';
 
-        $sql = "SELECT * FROM posts ORDER BY postCreationTime DESC".$limit.$offset;
-        $prepared_sql = $this->db_connection->prepare($sql);
-        $prepared_sql->execute();
+        $sql = "SELECT * FROM questions ORDER BY questionCreationTime DESC".$limit.$offset;
+        $preparedSQL = $this->dbConnection->prepare($sql);
+        $preparedSQL->execute();
 
-        return $prepared_sql->fetchAll(PDO::FETCH_ASSOC);
+        return $preparedSQL->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function get_question($question_id)
+    public function getAnswers($questionId)
     {
-    	$sql = "SELECT * FROM posts WHERE postId = ".$question_id;
+    	$sql = "SELECT userEmail, userId, answerText, answerId FROM answers, users 
+					WHERE answerInQuestion = $questionId AND userId = answers.answerOwner
+					ORDER BY answerCreationTime DESC";
 
-    	$prepared_sql = $this->db_connection->prepare($sql);
-	    $prepared_sql->execute();
+	    $preparedSQL = $this->dbConnection->prepare($sql);
+	    $preparedSQL->execute();
 
-	    return $prepared_sql->fetchAll(PDO::FETCH_ASSOC);
+	    return $preparedSQL->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getQuestion($question_id)
+    {
+    	$sql = "SELECT * FROM questions WHERE questionId = ".$question_id;
+
+    	$preparedSQL = $this->dbConnection->prepare($sql);
+	    $preparedSQL->execute();
+
+	    return $preparedSQL->fetchAll(PDO::FETCH_ASSOC);
     }
 }

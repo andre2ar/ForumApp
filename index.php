@@ -13,12 +13,12 @@ $router = new Router('forumApp');
 
 session_start();
 
-if(isset($_COOKIE['logged_user']))
+if(isset($_COOKIE['forumAppLoggedUser']))
 {
-    if(!isset($_SESSION['logged_user']))
+    if(!isset($_SESSION['forumAppLoggedUser']))
     {
-        $_SESSION['logged_user'] = $_COOKIE['logged_user'];
-        $_SESSION['user_id'] = $_COOKIE['user_id'];
+        $_SESSION['forumAppLoggedUser'] = $_COOKIE['forumAppLoggedUser'];
+        $_SESSION['forumAppUserId'] = $_COOKIE['forumAppUserId'];
     }
 }
 
