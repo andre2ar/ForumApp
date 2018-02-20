@@ -40,9 +40,12 @@ class Router
                 load_view('home', ['questions' => $questions]);
             }else if(strstr($intendend_place, 'open_question'))
             {
-            	$question_id = explode("=", $intendend_place)[1];
-            	$intendend_place = explode("?", $intendend_place)[0];
-	            load_view($intendend_place);
+	            $question_id = explode("=", $intendend_place)[1];
+	            $intendend_place = explode("?", $intendend_place)[0];
+
+	            $question = $this->db->get_question($question_id);
+
+	            load_view($intendend_place, ['question' => $question[0]]);
             }
             else
             {

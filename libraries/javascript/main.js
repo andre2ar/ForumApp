@@ -1,4 +1,49 @@
 $(function () {
+    $("#answerForm").submit(function (event) {
+        event.preventDefault();
+
+        let formData = new FormData(this);
+        formData.append('operation', 'answerQuestion');
+
+        $.ajax({
+            method: "POST",
+            url: './controller/OperationController.php',
+            data: formData,
+            processData: false,
+            contentType: false
+        }).done(function (result) {
+            $("#answerText").val('');
+            swal({
+                title: "Success",
+                text: "You answered this question",
+                icon: "success",
+            });
+        });
+    });
+
+    $("#answerQuestion").click(function () {
+        if(($('#login_logout_button').attr('data-user')).length > 0)
+        {
+            $("#answerSpace").show('fast');
+        }else
+        {
+            swal({
+                title: "Login",
+                text: "To post an answer you need to login first",
+                icon: "info",
+                buttons:{
+                    cancel: "No",
+                    Login: true
+                }
+            }).then(function (option) {
+                if(option === 'Login')
+                {
+                    location = 'login';
+                }
+            });
+        }
+    });
+
     $(window).on('scroll', infinity_scroll);
 
     function infinity_scroll() {
@@ -28,7 +73,7 @@ $(function () {
     }
 
     function add_questions(questions) {
-        questions.forEach(function(currentValue, index){
+        questions.forEach(function(currentValue){
             $(".card_edit:first").clone()
                 .insertAfter(".card_edit:last");
 
@@ -36,6 +81,7 @@ $(function () {
             $(lastCard).find('h5').text(currentValue.postTitle);
             $(lastCard).find("p").text(currentValue.postDetails);
             $(lastCard).find(".category").html('<i class="fa fa-compass"></i>'+currentValue.postCategory);
+            $(lastCard).find("a").prop("href", 'open_question?question_id='+currentValue.postId);
 
             $(lastCard).show("slow");
         });
@@ -192,7 +238,7 @@ $(function () {
                 contentType: false
             }).done(function (result) {
                 result = JSON.parse(result);
-                if(result.success === false)
+                if(result.questionId === false)
                 {
                     swal({
                         title: "Error",
@@ -202,7 +248,7 @@ $(function () {
                 }
                 else
                 {
-                    add_question_board($("#yourPostTitle").val(), $("#yourPostDetails").val(), $("#yourPostCategory").val());
+                    add_question_board($("#yourPostTitle").val(), $("#yourPostDetails").val(), $("#yourPostCategory").val(), result.questionId);
                     $("#clearFields").click();
                     swal({
                         title: "Success",
@@ -237,15 +283,18 @@ $(function () {
         }
     });
 
-    function add_question_board(title, details, category) {
+    function add_question_board(title, details, category, id) {
         $(".card_edit:first").clone()
             .insertAfter(".card_edit:first");
 
-        $(".card_edit:eq(1) h5").text(title);
-        $(".card_edit:eq(1) p").text(details);
-        $(".card_edit:eq(1) .category").html('<i class="fa fa-compass"></i>'+category);
+        let new_card = $(".card_edit:eq(1)");
 
-        $(".card_edit:eq(1)").show("slow");
+        $(new_card).find("h5").text(title);
+        $(new_card).find("p").text(details);
+        $(new_card).find(".category").html('<i class="fa fa-compass"></i>' + category);
+        $(new_card).find("a").prop("href", 'open_question?question_id=' + id);
+
+        $(new_card).show("slow");
     }
 
     /********************************* VALIDATIONS *********************************************/

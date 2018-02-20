@@ -52,3 +52,11 @@
     -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
 }
+
+#answerSpace{
+    margin-top: 4rem;
+}
+
+#answerForm button{
+    margin-top: 0.6rem;
+}

@@ -62,7 +62,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `formApp`.`comments` ;
 
 CREATE TABLE IF NOT EXISTS `formApp`.`comments` (
-  `commentId` INT UNSIGNED NOT NULL,
+  `commentId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `commentText` MEDIUMTEXT NOT NULL,
   `commentOwner` INT UNSIGNED NOT NULL,
   `commentInPost` INT UNSIGNED NOT NULL,

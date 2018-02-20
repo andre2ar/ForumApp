@@ -18,6 +18,13 @@ class OperationsController
         $operation = $data['operation'];
 
         switch ($operation){
+	        case 'answerQuestion':
+	        	if(isset($_SESSION) && isset($_SESSION['user_id']))
+		        {
+		        	$comment_id = $this->db_connection->answer_question($data['answerText'], $data['question_id']);
+		        	return json_encode(['comment_id' => $comment_id]);
+		        }
+	        	break;
 	        case 'getMoreQuestions':
 				$questions = $this->db_connection->get_questions($data['after']);
 				if($questions)
@@ -35,7 +42,7 @@ class OperationsController
                 }else
                 {
                     $result = $this->db_connection->submit_question($data);
-                    return json_encode(['success' => $result]);
+                    return json_encode(['questionId' => $result]);
                 }
                 break;
             case 'login':

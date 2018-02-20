@@ -21,6 +21,25 @@ class DB
         }
     }
 
+    public function answer_question($commentText, $questionId)
+    {
+    	$sql = "INSERT INTO comments(commentText, commentOwner, commentInPost)
+				VALUES (:commentText, :commentOwner, :commentInPost)";
+
+    	$prepared_sql = $this->db_connection->prepare($sql);
+
+	    $prepared_sql->bindParam(':commentText', $commentText);
+	    $prepared_sql->bindParam(':commentOwner', $_SESSION['user_id']);
+	    $prepared_sql->bindParam(':commentInPost', $questionId);
+
+	    if($prepared_sql->execute())
+	    {
+		    $questionId = $this->db_connection->lastInsertId();
+	    }else $questionId = false;
+
+	    return $questionId;
+    }
+
     public function submit_question($data)
     {
 
@@ -34,7 +53,12 @@ class DB
         $prepared_sql->bindParam(':questionCategory', $data['category']);
         $prepared_sql->bindParam(':questionOwner', $_SESSION['user_id']);
 
-        return $prepared_sql->execute();
+        if($prepared_sql->execute())
+        {
+        	$questionId = $this->db_connection->lastInsertId();
+        }else $questionId = false;
+
+        return $questionId;
     }
 
     public function add_new_user($data)
@@ -79,5 +103,15 @@ class DB
         $prepared_sql->execute();
 
         return $prepared_sql->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function get_question($question_id)
+    {
+    	$sql = "SELECT * FROM posts WHERE postId = ".$question_id;
+
+    	$prepared_sql = $this->db_connection->prepare($sql);
+	    $prepared_sql->execute();
+
+	    return $prepared_sql->fetchAll(PDO::FETCH_ASSOC);
     }
 }
