@@ -18,6 +18,16 @@ class OperationsController
         $operation = $data['operation'];
 
         switch ($operation){
+	        case 'editQuestion':
+	        	if(isset($data['editQuestionTitle']) && isset($data['questionId']))
+		        {
+		        	$result = $this->dbConnection->editQuestion($data['editQuestionTitle'], $data['editQuestionDetails'], $data['editQuestionCategory'], $data['questionId']);
+			        return json_encode(['success' => $result]);
+		        }else
+		        {
+			        return json_encode(['success' => false]);
+		        }
+	        	break;
 	        case 'answerQuestion':
 	        	if(isset($_SESSION) && isset($_SESSION['forumAppUserId']))
 		        {

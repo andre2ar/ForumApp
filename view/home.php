@@ -1,24 +1,5 @@
 <?php
-    $categories = [
-        "Animal",
-        "Art",
-        "Automotive",
-        "Aviation",
-        "Biology",
-        "Chemistry",
-        "Computer",
-        "Travel",
-        "Nature",
-        "Sport",
-        "Geek",
-        "Geograph",
-        "Language",
-        "Movie",
-        "Science",
-        "Television",
-        "Video game",
-        "Other"
-    ];
+    $categories = returnCategories();
 ?>
 <div class="row">
     <div class="col-lg-12">

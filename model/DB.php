@@ -76,6 +76,15 @@ class DB
         return $preparedSQL->execute();
     }
 
+    public function editQuestion($questionTitle, $questionDetails, $questionCategory, $questionId)
+    {
+		$sql = "UPDATE questions SET questionTitle = '".$questionTitle."', questionDetails = '".$questionDetails."', questionCategory = '".$questionCategory."' WHERE questionId = $questionId";
+
+		$preparedSQL = $this->dbConnection->prepare($sql);
+
+	    return $preparedSQL->execute();
+    }
+
     public function getUser($email)
     {
         $sql = "SELECT userId, userEmail, userPassword FROM users WHERE userEmail = :useremail";

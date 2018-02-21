@@ -1,298 +1,8 @@
 $(function () {
-    $("#answerForm").submit(function (event) {
-        event.preventDefault();
-
-        let formData = new FormData(this);
-        formData.append('operation', 'answerQuestion');
-
-        $.ajax({
-            method: "POST",
-            url: './controller/OperationController.php',
-            data: formData,
-            processData: false,
-            contentType: false
-        }).done(function (result) {
-            result = JSON.parse(result);
-            console.log(result);
-            let answerTextItem = $("#answerText");
-
-            if(result.commentId !== false)
-            {
-                answerAddToPage(result['userId'], result['userName'], $(answerTextItem).val(), result.commentId);
-                $(answerTextItem).val('');
-
-                swal({
-                    title: "Success",
-                    text: "You answered this question",
-                    icon: "success",
-                });
-            }else
-            {
-                swal({
-                    title: "Error",
-                    text: "Unfortunely your answer can't be posted",
-                    icon: "error",
-                });
-            }
-        });
-    });
-    
-    function answerAddToPage(userId, userName, answerText, answerId)
-    {
-        $(".answer-box:first").clone()
-            .insertAfter(".answer-box:first");
-
-        let newAnswer = $(".answer-box:eq(1)");
-
-        $(newAnswer).find("h4").text(userName);
-        $(newAnswer).find("p").text(answerText);
-        $(newAnswer).attr("data-answer-id", answerId);
-        $(newAnswer).attr("data-user-id", userId);
-
-        $(newAnswer).show("slow");
-    }
-
-    $("#answerQuestion").click(function () {
-        if(($('#loginLogoutButton').attr('data-user')).length > 0)
-        {
-            $("#answerSpace").show('fast');
-        }else
-        {
-            swal({
-                title: "Login",
-                text: "To post an answer you need to login first",
-                icon: "info",
-                buttons:{
-                    cancel: "No",
-                    Login: true
-                }
-            }).then(function (option) {
-                if(option === 'Login')
-                {
-                    location = 'login';
-                }
-            });
-        }
-    });
-
     $(window).on('scroll', infinityScroll);
 
-    function infinityScroll() {
-        let cardsCount = $(".card_edit").length,
-            answersCount = $(".answer-box").length,
-            itemDistance = 0, questionId = '', whereAdd, operation;
-
-        if(cardsCount > 0)
-        {
-            itemDistance = ".card_edit:last";
-            whereAdd = ".card_edit";
-            operation = "getMoreQuestions";
-        }
-        else if(answersCount > 0)
-        {
-            itemDistance = ".answer-box:last";
-            whereAdd = ".answer-box";
-            operation = "getMoreAnswers";
-            questionId = $("#questionId").val();
-        }
-        else $(window).off("scroll");
-
-        let distanceTop = distanceToTop(itemDistance),
-            screenHeight = window.innerHeight;
-
-        if(distanceTop <= screenHeight)
-        {
-            $(window).off("scroll");
-            $.ajax({
-                method: "POST",
-                url: './controller/OperationController.php',
-                data: {
-                    operation: operation,
-                    after: $(whereAdd).length - 1,
-                    questionId: questionId
-                }
-            }).done(function (result) {
-                result = JSON.parse(result);
-
-                if(result.success === true)
-                {
-                    if (cardsCount > 0)
-                        add_questions(result.questions);
-                    else if (answersCount > 0)
-                        addAnswers(result.answers);
-
-
-                    $(window).on("scroll", infinityScroll);
-                }
-            });
-        }
-    }
-
-    function add_questions(questions) {
-        questions.forEach(function(currentValue){
-            $(".card_edit:first").clone()
-                .insertAfter(".card_edit:last");
-
-            let lastCard = $(".card_edit:last");
-            $(lastCard).find('h5').text(currentValue.questionTitle);
-            $(lastCard).find("p").text(currentValue.questionDetails);
-            $(lastCard).find(".category").html('<i class="fa fa-compass"></i> '+currentValue.questionCategory);
-            $(lastCard).find("a").prop("href", 'open_question?question_id='+currentValue.questionId);
-
-            $(lastCard).show("slow");
-        });
-    }
-
-    function addAnswers(answers) {
-        answers.forEach(function (answer) {
-            $(".answer-box:first").clone()
-                .insertAfter(".answer-box:last");
-
-            let newAnswer = $(".answer-box:last");
-
-            $(newAnswer).find("h4").text(answer.userEmail.split("@")[0]);
-            $(newAnswer).find("p").text(answer.answerText);
-            $(newAnswer).attr("data-answer-id", answer.answerId);
-            $(newAnswer).attr("data-user-id", answer.userId);
-
-            $(newAnswer).show("slow");
-        });
-    }
-    function distanceToTop(element) {
-        element = $(element);
-
-        let cordinates = $(element)[0].getBoundingClientRect();
-        return cordinates.y;
-    }
-    /********************************* AJAX **************************************************/
-    $("#signUpForm").submit(function (event) {
-        event.preventDefault();
-
-        let formData = new FormData(this);
-        formData.append('operation', 'signUp');
-
-        $.ajax({
-            method: "POST",
-            url: './controller/OperationController.php',
-            data: formData,
-            processData: false,
-            contentType: false
-        }).done(function (result) {
-            result = JSON.parse(result);
-            if(result.success === false)
-            {
-                swal({
-                    title: "Error",
-                    text: "Fill up the fields correctly",
-                    icon: "error"
-                });
-            }
-            else
-            {
-                swal({
-                    title: "Success",
-                    text: "You signed up successfully",
-                    icon: "success",
-                    buttons:{
-                        Login: true
-                    }
-                }).then(function () {
-                    location = 'login';
-                });
-            }
-        });
-    });
-
-    $("#loginForm").submit(function (event) {
-        event.preventDefault();
-
-        let formData = new FormData(this);
-        formData.append('operation', 'login');
-
-        $.ajax({
-            method: "POST",
-            url: './controller/OperationController.php',
-            data: formData,
-            processData: false,
-            contentType: false
-        }).done(function (result) {
-            result = JSON.parse(result);
-            if(result.success == false)
-            {
-                swal({
-                    title: "Try again",
-                    text: "User or password incorrect",
-                    icon: "error"
-                });
-            }
-            else
-            {
-                swal({
-                    title: "Success",
-                    text: "Successfully logged",
-                    icon: "success",
-                    buttons:{
-                        Ok: true
-                    }
-                }).then(function () {
-                    location = 'home';
-                });
-            }
-        });
-    });
-
-    $("#loginLogoutButton").click(function () {
-        if($(this).hasClass('btn-secondary'))
-        {
-            swal({
-                title: "Logout",
-                text: "Are you sure that you want to logout?",
-                icon: "info",
-                buttons:{
-                    cancel: "No",
-                    Yes: true
-                }
-            }).then(function (option) {
-                if(option === 'Yes')
-                {
-                    $.ajax({
-                        method: 'POST',
-                        url: "./controller/OperationController.php",
-                        data:{
-                            operation: 'logout'
-                        }
-                    }).done(function (result) {
-                        result = JSON.parse(result);
-                        if(result.success === true)
-                        {
-                            swal({
-                                title: "Success",
-                                text: "Successfully logged out",
-                                icon: "success",
-                                buttons:{
-                                    Ok: true
-                                }
-                            }).then(function () {
-                                location.reload();
-                            });
-                        }
-                    });
-                }
-            });
-        }
-    });
-
-    /*Define previous value to fields: before login*/
-    $("#yourPostTitle").val(sessionStorage.getItem('forumAppPostTitle'));
-    $("#yourPostDetails").val(sessionStorage.getItem('forumAppPostDetails'));
-    $("#yourPostCategory").val(sessionStorage.getItem('forumAppPostCategory'));
-
-    $("#clearFields").click(function () {
-        sessionStorage.removeItem('forumAppPostTitle');
-        sessionStorage.removeItem('forumAppPostDetails');
-        sessionStorage.removeItem('forumAppPostCategory');
-    });
-
+    /********************************************** AJAX **********************************************************/
+    /* Share a question */
     $("#shareQuestion").submit(function (event) {
         event.preventDefault();
 
@@ -355,6 +65,277 @@ $(function () {
         }
     });
 
+    /* Send answer */
+    $("#answerForm").submit(function (event) {
+        event.preventDefault();
+
+        let formData = new FormData(this);
+        formData.append('operation', 'answerQuestion');
+
+        $.ajax({
+            method: "POST",
+            url: './controller/OperationController.php',
+            data: formData,
+            processData: false,
+            contentType: false
+        }).done(function (result) {
+            result = JSON.parse(result);
+            console.log(result);
+            let answerTextItem = $("#answerText");
+
+            if(result.commentId !== false)
+            {
+                answerAddToPage(result['userId'], result['userName'], $(answerTextItem).val(), result.commentId);
+                $(answerTextItem).val('');
+
+                swal({
+                    title: "Success",
+                    text: "You answered this question",
+                    icon: "success",
+                });
+            }else
+            {
+                swal({
+                    title: "Error",
+                    text: "Unfortunely your answer can't be posted",
+                    icon: "error",
+                });
+            }
+        });
+    });
+
+    /* Sign up Form*/
+    $("#signUpForm").submit(function (event) {
+        event.preventDefault();
+
+        let formData = new FormData(this);
+        formData.append('operation', 'signUp');
+
+        $.ajax({
+            method: "POST",
+            url: './controller/OperationController.php',
+            data: formData,
+            processData: false,
+            contentType: false
+        }).done(function (result) {
+            result = JSON.parse(result);
+            if(result.success === false)
+            {
+                swal({
+                    title: "Error",
+                    text: "Fill up the fields correctly",
+                    icon: "error"
+                });
+            }
+            else
+            {
+                swal({
+                    title: "Success",
+                    text: "You signed up successfully",
+                    icon: "success",
+                    buttons:{
+                        Login: true
+                    }
+                }).then(function () {
+                    location = 'login';
+                });
+            }
+        });
+    });
+
+    /* Login form */
+    $("#loginForm").submit(function (event) {
+        event.preventDefault();
+
+        let formData = new FormData(this);
+        formData.append('operation', 'login');
+
+        $.ajax({
+            method: "POST",
+            url: './controller/OperationController.php',
+            data: formData,
+            processData: false,
+            contentType: false
+        }).done(function (result) {
+            result = JSON.parse(result);
+            if(result.success == false)
+            {
+                swal({
+                    title: "Try again",
+                    text: "User or password incorrect",
+                    icon: "error"
+                });
+            }
+            else
+            {
+                swal({
+                    title: "Success",
+                    text: "Successfully logged",
+                    icon: "success",
+                    buttons:{
+                        Ok: true
+                    }
+                }).then(function () {
+                    location = 'home';
+                });
+            }
+        });
+    });
+
+    /* Logout button */
+    $("#loginLogoutButton").click(function () {
+        if(($(this).attr('data-user')).length > 0)
+        {
+            swal({
+                title: "Logout",
+                text: "Are you sure that you want to logout?",
+                icon: "info",
+                buttons:{
+                    cancel: "No",
+                    Yes: true
+                }
+            }).then(function (option) {
+                if(option === 'Yes')
+                {
+                    $.ajax({
+                        method: 'POST',
+                        url: "./controller/OperationController.php",
+                        data:{
+                            operation: 'logout'
+                        }
+                    }).done(function (result) {
+                        result = JSON.parse(result);
+                        if(result.success === true)
+                        {
+                            swal({
+                                title: "Success",
+                                text: "Successfully logged out",
+                                icon: "success",
+                                buttons:{
+                                    Ok: true
+                                }
+                            }).then(function () {
+                                location.reload();
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+    /* Infinity scroll: Questions and answers */
+    function infinityScroll() {
+        let cardsCount = $(".card_edit").length,
+            answersCount = $(".answer-box").length,
+            itemDistance = 0, questionId = '', whereAdd, operation;
+
+        if(cardsCount > 0)
+        {
+            itemDistance = ".card_edit:last";
+            whereAdd = ".card_edit";
+            operation = "getMoreQuestions";
+        }
+        else if(answersCount > 0)
+        {
+            itemDistance = ".answer-box:last";
+            whereAdd = ".answer-box";
+            operation = "getMoreAnswers";
+            questionId = $("#questionId").val();
+        }
+        else $(window).off("scroll");
+
+        let distanceTop = distanceToTop(itemDistance),
+            screenHeight = window.innerHeight;
+
+        if(distanceTop <= screenHeight)
+        {
+            $(window).off("scroll");
+            $.ajax({
+                method: "POST",
+                url: './controller/OperationController.php',
+                data: {
+                    operation: operation,
+                    after: $(whereAdd).length - 1,
+                    questionId: questionId
+                }
+            }).done(function (result) {
+                result = JSON.parse(result);
+
+                if(result.success === true)
+                {
+                    if (cardsCount > 0)
+                        addQuestions(result.questions);
+                    else if (answersCount > 0)
+                        addAnswers(result.answers);
+
+
+                    $(window).on("scroll", infinityScroll);
+                }
+            });
+        }
+    }
+
+    /* Edit question */
+    $("#editQuestion").submit(function (event) {
+        event.preventDefault();
+
+        let formData = new FormData(this);
+        formData.append('operation', 'editQuestion');
+        formData.append('questionId', $("#questionId").val());
+
+        $.ajax({
+            method: "POST",
+            url: './controller/OperationController.php',
+            data: formData,
+            processData: false,
+            contentType: false
+        }).done(function (result) {
+            result = JSON.parse(result);
+            if(result.success === true)
+            {
+                $("#editQuestionArea").hide('fast');
+                let questionTitle = $("#editQuestionTitle").val(),
+                    questionDetails = $("#editQuestionDetails").val(),
+                    questionCategory = $("#editQuestionCategory").val();
+
+                $(".question-area h1").text(questionTitle);
+                $(".question-area p").text(questionDetails);
+                $(".category span").text(questionCategory);
+
+                swal({
+                    title: "Success",
+                    text: "Question edited successefully",
+                    icon: "success",
+                });
+            }else
+            {
+                swal({
+                    title: "Error",
+                    text: "Question couldn't be edited successefully",
+                    icon: "error",
+                });
+            }
+        });
+    });
+
+    /********************************************** Auxiliar ********************************************************/
+    /* Add questions dinamically*/
+    function addQuestions(questions) {
+        questions.forEach(function(currentValue){
+            $(".card_edit:first").clone()
+                .insertAfter(".card_edit:last");
+
+            let lastCard = $(".card_edit:last");
+            $(lastCard).find('h5').text(currentValue.questionTitle);
+            $(lastCard).find("p").text(currentValue.questionDetails);
+            $(lastCard).find(".category span").text(currentValue.questionCategory);
+            $(lastCard).find("a").prop("href", 'open_question?question_id='+currentValue.questionId);
+
+            $(lastCard).show("slow");
+        });
+    }
+
     function addQuestionBoard(title, details, category, id) {
         $(".card_edit:first").clone()
             .insertAfter(".card_edit:first");
@@ -363,11 +344,111 @@ $(function () {
 
         $(newCard).find("h5").text(title);
         $(newCard).find("p").text(details);
-        $(newCard).find(".category").html('<i class="fa fa-compass"></i> ' + category);
+        $(newCard).find(".category span").text(category);
         $(newCard).find("a").prop("href", 'open_question?question_id=' + id);
 
         $(newCard).show("slow");
     }
+
+    /* Add answers dinamically*/
+    function answerAddToPage(userId, userName, answerText, answerId) {
+        $(".answer-box:first").clone()
+            .insertAfter(".answer-box:first");
+
+        let newAnswer = $(".answer-box:eq(1)");
+
+        $(newAnswer).find("h4").text(userName);
+        $(newAnswer).find("p").text(answerText);
+        $(newAnswer).attr("data-answer-id", answerId);
+        $(newAnswer).attr("data-user-id", userId);
+
+        $(".alert").hide();
+
+        $(newAnswer).show("slow");
+    }
+
+    function addAnswers(answers) {
+        answers.forEach(function (answer) {
+            $(".answer-box:first").clone()
+                .insertAfter(".answer-box:last");
+
+            let newAnswer = $(".answer-box:last");
+
+            $(newAnswer).find("h4").text(answer.userEmail.split("@")[0]);
+            $(newAnswer).find("p").text(answer.answerText);
+            $(newAnswer).attr("data-answer-id", answer.answerId);
+            $(newAnswer).attr("data-user-id", answer.userId);
+
+            $(newAnswer).show("slow");
+        });
+    }
+
+    /* Redirect user to login page if not logged */
+    $("#answerQuestion").click(function () {
+        $("#editQuestionArea").hide("fast");
+        if(($('#loginLogoutButton').attr('data-user')).length > 0)
+        {
+            $("#answerSpace").show('fast');
+        }else
+        {
+            swal({
+                title: "Login",
+                text: "To post an answer you need to login first",
+                icon: "info",
+                buttons:{
+                    cancel: "No",
+                    Login: true
+                }
+            }).then(function (option) {
+                if(option === 'Login')
+                {
+                    location = 'login';
+                }
+            });
+        }
+    });
+
+    /* Show form to edit a question */
+    $("#editQuestionButton").click(function () {
+        $("#answerSpace").hide("fast");
+        $("#editQuestionArea").show("slow");
+    });
+
+    /* Calculates the distance to the top of page */
+    function distanceToTop(element) {
+        element = $(element);
+
+        let cordinates = $(element)[0].getBoundingClientRect();
+        return cordinates.y;
+    }
+
+    /* Clear question form and SESSION STORAGE */
+    $("#clearFields").click(function () {
+        sessionStorage.removeItem('forumAppPostTitle');
+        sessionStorage.removeItem('forumAppPostDetails');
+        sessionStorage.removeItem('forumAppPostCategory');
+    });
+
+    /*Define previous value to fields: before login*/
+    $("#yourPostTitle").val(sessionStorage.getItem('forumAppPostTitle'));
+    $("#yourPostDetails").val(sessionStorage.getItem('forumAppPostDetails'));
+    $("#yourPostCategory").val(sessionStorage.getItem('forumAppPostCategory'));
+
+    /**************************************** CSS ********************************************/
+    $("#loginLogoutButton").mouseover(function () {
+        if(($(this).attr('data-user')).length > 0 )
+        {
+            $(this).html("<i class='fas fa-sign-out-alt'></i> Logout");
+        }
+    });
+
+    $("#loginLogoutButton").mouseout(function () {
+        if(($(this).attr('data-user')).length > 0)
+        {
+            let user = $(this).attr("data-user");
+            $(this).html(user);
+        }
+    });
 
     /********************************* VALIDATIONS *********************************************/
     $("#name").keyup(function () {
@@ -430,19 +511,4 @@ $(function () {
             }else $("#signUpButton").prop("disabled", true);
         });
     }
-    /**************************************** CSS ********************************************/
-    $("#loginLogoutButton").mouseover(function () {
-        if(($(this).attr('data-user')).length > 0 )
-        {
-            $(this).html("<i class='fas fa-sign-out-alt'></i> Logout");
-        }
-    });
-
-    $("#loginLogoutButton").mouseout(function () {
-        if(($(this).attr('data-user')).length > 0)
-        {
-            let user = $(this).attr("data-user");
-            $(this).html(user);
-        }
-    });
 });

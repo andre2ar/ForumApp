@@ -9,6 +9,30 @@ function loadModel($model_name, $params = null)
     include './controller/'.$model_name.'.php';
 }
 
+function returnCategories()
+{
+	return $categories = [
+		"Animal",
+		"Art",
+		"Automotive",
+		"Aviation",
+		"Biology",
+		"Chemistry",
+		"Computer",
+		"Travel",
+		"Nature",
+		"Sport",
+		"Geek",
+		"Geograph",
+		"Language",
+		"Movie",
+		"Science",
+		"Television",
+		"Video game",
+		"Other"
+	];
+}
+
 function genQuestionBox($title, $details, $category, $question_id, $comments_count = 0, $visibility = 'block')
 {
 	?>
@@ -25,9 +49,11 @@ function genQuestionBox($title, $details, $category, $question_id, $comments_cou
 					<span class="badge badge-secondary float-left"><span class="count_answers"><?php echo $comments_count?></span> answers</span>
 					<span class="badge badge-primary category">
                         <i class="fa fa-compass"></i>
+                        <span>
 						<?php
 						echo $category;
 						?>
+                        </span>
                     </span>
 
 					<a href="open_question?question_id=<?php echo $question_id; ?>" class="card-link float-right">Open</a>
