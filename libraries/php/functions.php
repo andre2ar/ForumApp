@@ -69,9 +69,26 @@ function genAnswerBox($userId, $userName, $answerText, $answerId, $visibility = 
     ?>
     <div class="answer-box" data-answer-id="<?php echo $answerId; ?>" data-user-id="<?php echo $userId; ?>" style="display: <?php echo $visibility; ?>">
         <h4><?php echo $userName; ?></h4>
-        <p>
-            <?php echo $answerText; ?>
+	    <?php
+	    if(isset($_SESSION['forumAppUserId']) && $_SESSION['forumAppUserId'] === $userId){
+		    ?>
+            <button data-answer-id="<?php echo $answerId; ?>" class="btn btn-outline-primary btn-sm float-right editAnswerButton">
+                <i class="far fa-edit"></i> Edit answer
+            </button>
+	    <?php } ?>
+
+        <p data-answer-id="<?php echo $answerId;?>">
+            <span><?php echo $answerText; ?></span>
         </p>
+
+        <div class="editAnswerArea" data-answer-id="<?php echo $answerId;?>" style="display: none;">
+            <form>
+                <div class="form-group">
+                    <textarea rows="4" data-answer-id="<?php echo $answerId; ?>" class="form-control" name="editAnswer"><?php echo $answerText; ?></textarea>
+                </div>
+                <button type="button" data-answer-id="<?php echo $answerId; ?>" class="btn btn-primary btn-sm float-right saveEditAnswerButton">Save answer <i class="far fa-save"></i></button>
+            </form>
+        </div>
         <hr>
     </div>
     <?php

@@ -6,12 +6,12 @@ $categories = returnCategories();
 <div class="row">
     <div class="col-lg-12 question-area">
         <h1 class="text-center question-title">
-		    <?php echo $question['questionTitle'];?>
+		    <span><?php echo $question['questionTitle'];?></span>
         </h1>
         <hr>
 
         <p class="text-justify show-question-details">
-            <?php echo $question['questionDetails']?>
+            <span><?php echo $question['questionDetails']?></span>
         </p>
         <span class="badge badge-primary category float-right">
                                 <i class="fa fa-compass"></i>
@@ -23,7 +23,7 @@ $categories = returnCategories();
         </span><br>
 
         <?php
-	    if($_SESSION['forumAppUserId'] === $question['questionOwner']){
+	    if(isset($_SESSION['forumAppUserId']) && $_SESSION['forumAppUserId'] === $question['questionOwner']){
 	    ?>
         <button id="editQuestionButton" class="btn btn-outline-primary btn-sm">
             <i class="far fa-edit"></i> Edit question
@@ -46,7 +46,7 @@ $categories = returnCategories();
         </div>
 
         <?php
-        if($_SESSION['forumAppUserId'] === $question['questionOwner']){
+        if(isset($_SESSION['forumAppUserId']) && $_SESSION['forumAppUserId'] === $question['questionOwner']){
         ?>
         <div id="editQuestionArea" style="display: none;">
             <form id="editQuestion" name="editQuestion" method="post">
@@ -74,7 +74,7 @@ $categories = returnCategories();
 
                 </select>
 
-                <button type="submit" id="submitEdit" class="btn btn-primary btn-sm float-right"><i class="fas fa-pencil-alt"></i> Edit question</button>
+                <button type="submit" id="submitEdit" class="btn btn-primary btn-sm float-right">Save question <i class="far fa-save"></i></button>
             </form>
         </div>
         <?php } ?>

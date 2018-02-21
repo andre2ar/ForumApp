@@ -319,6 +319,43 @@ $(function () {
         });
     });
 
+    /* Edit comment */
+    $(".saveEditAnswerButton").click(function () {
+        let answerId = $(this).attr("data-answer-id"),
+            answerEdited = $("textarea[data-answer-id='"+answerId+"']").val();
+
+        $.ajax({
+            method: "POST",
+            url: './controller/OperationController.php',
+            data: {
+                operation: "editAnswer",
+                answerId: answerId,
+                answerText: answerEdited
+            }
+        }).done(function (result) {
+            result = JSON.parse(result);
+            if(result.success === true)
+            {
+                $("p[data-answer-id='"+answerId+"'] span").text($("textarea[data-answer-id='"+answerId+"']").val());
+                $("p[data-answer-id='"+answerId+"']").show("fast");
+                $("div[data-answer-id='"+answerId+"'] div").hide('fast');
+
+                swal({
+                    title: "Success",
+                    text: "Answer edited successefully",
+                    icon: "success",
+                });
+            }else
+            {
+                swal({
+                    title: "Error",
+                    text: "Answer couldn't be edited successefully",
+                    icon: "error",
+                });
+            }
+        });
+    });
+
     /********************************************** Auxiliar ********************************************************/
     /* Add questions dinamically*/
     function addQuestions(questions) {
@@ -412,6 +449,13 @@ $(function () {
     $("#editQuestionButton").click(function () {
         $("#answerSpace").hide("fast");
         $("#editQuestionArea").show("slow");
+    });
+
+    /* Show form to edit answer */
+    $(".editAnswerButton").click(function () {
+        let answerId = $(this).attr("data-answer-id");
+        $("p[data-answer-id='"+answerId+"']").hide("fast");
+        $("div[data-answer-id='"+answerId+"']").show("fast");
     });
 
     /* Calculates the distance to the top of page */

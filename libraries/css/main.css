@@ -81,10 +81,30 @@
     margin-top: 1rem;
 }
 
+.question-area h1 span{
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+.question-area p span{
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
 #editQuestionArea{
     margin-top: 1rem;
 }
 
 #editQuestionArea button {
     margin-top: 1rem;
+}
+
+.answer-box p span{
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+.editAnswerArea{
+    margin-top: 3rem;
+    margin-bottom: 4rem;
 }

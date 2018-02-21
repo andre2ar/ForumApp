@@ -85,6 +85,15 @@ class DB
 	    return $preparedSQL->execute();
     }
 
+    public function editAnswer($answerId, $answerText)
+    {
+	    $sql = "UPDATE answers SET answerText = '".$answerText."' WHERE answerId = $answerId";
+
+	    $preparedSQL = $this->dbConnection->prepare($sql);
+
+	    return $preparedSQL->execute();
+    }
+
     public function getUser($email)
     {
         $sql = "SELECT userId, userEmail, userPassword FROM users WHERE userEmail = :useremail";
