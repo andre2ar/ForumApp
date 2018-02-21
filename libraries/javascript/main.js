@@ -42,14 +42,14 @@ $(function () {
         $(".answer-box:first").clone()
             .insertAfter(".answer-box:first");
 
-        let newComment = $(".answer-box:eq(1)");
+        let newAnswer = $(".answer-box:eq(1)");
 
-        $(newComment).find("h4").text(userName);
-        $(newComment).find("p").text(answerText);
-        $(newComment).attr("data-answer-id", answerId);
-        $(newComment).attr("data-user-id", userId);
+        $(newAnswer).find("h4").text(userName);
+        $(newAnswer).find("p").text(answerText);
+        $(newAnswer).attr("data-answer-id", answerId);
+        $(newAnswer).attr("data-user-id", userId);
 
-        $(newComment).show("slow");
+        $(newAnswer).show("slow");
     }
 
     $("#answerQuestion").click(function () {
@@ -78,7 +78,26 @@ $(function () {
     $(window).on('scroll', infinityScroll);
 
     function infinityScroll() {
-        let distanceTop = distanceToTop(".card_edit:last"),
+        let cardsCount = $(".card_edit").length,
+            answersCount = $(".answer-box").length,
+            itemDistance = 0, questionId = '', whereAdd, operation;
+
+        if(cardsCount > 0)
+        {
+            itemDistance = ".card_edit:last";
+            whereAdd = ".card_edit";
+            operation = "getMoreQuestions";
+        }
+        else if(answersCount > 0)
+        {
+            itemDistance = ".answer-box:last";
+            whereAdd = ".answer-box";
+            operation = "getMoreAnswers";
+            questionId = $("#questionId").val();
+        }
+        else $(window).off("scroll");
+
+        let distanceTop = distanceToTop(itemDistance),
             screenHeight = window.innerHeight;
 
         if(distanceTop <= screenHeight)
@@ -88,15 +107,21 @@ $(function () {
                 method: "POST",
                 url: './controller/OperationController.php',
                 data: {
-                    operation: 'getMoreQuestions',
-                    after: $(".card_edit").length - 1
+                    operation: operation,
+                    after: $(whereAdd).length - 1,
+                    questionId: questionId
                 }
             }).done(function (result) {
                 result = JSON.parse(result);
 
                 if(result.success === true)
                 {
-                    add_questions(result.questions);
+                    if (cardsCount > 0)
+                        add_questions(result.questions);
+                    else if (answersCount > 0)
+                        addAnswers(result.answers);
+
+
                     $(window).on("scroll", infinityScroll);
                 }
             });
@@ -115,6 +140,22 @@ $(function () {
             $(lastCard).find("a").prop("href", 'open_question?question_id='+currentValue.questionId);
 
             $(lastCard).show("slow");
+        });
+    }
+
+    function addAnswers(answers) {
+        answers.forEach(function (answer) {
+            $(".answer-box:first").clone()
+                .insertAfter(".answer-box:last");
+
+            let newAnswer = $(".answer-box:last");
+
+            $(newAnswer).find("h4").text(answer.userEmail.split("@")[0]);
+            $(newAnswer).find("p").text(answer.answerText);
+            $(newAnswer).attr("data-answer-id", answer.answerId);
+            $(newAnswer).attr("data-user-id", answer.userId);
+
+            $(newAnswer).show("slow");
         });
     }
     function distanceToTop(element) {

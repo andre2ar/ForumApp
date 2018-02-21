@@ -104,11 +104,17 @@ class DB
         return $preparedSQL->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getAnswers($questionId)
+    public function getAnswers($questionId, $offset = 0, $how_many = 15)
     {
+	    $limit = " LIMIT ".$how_many;
+	    if($offset != 0)
+	    {
+		    $offset = " OFFSET ".$offset;
+	    }else $offset = '';
+
     	$sql = "SELECT userEmail, userId, answerText, answerId FROM answers, users 
 					WHERE answerInQuestion = $questionId AND userId = answers.answerOwner
-					ORDER BY answerCreationTime DESC";
+					ORDER BY answerCreationTime DESC".$limit.$offset;
 
 	    $preparedSQL = $this->dbConnection->prepare($sql);
 	    $preparedSQL->execute();

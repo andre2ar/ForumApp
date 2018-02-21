@@ -31,6 +31,12 @@ class OperationsController
 					return json_encode(['success' => true, 'questions' => $questions]);
 				else return json_encode(['success' => false]);
 	        	break;
+	        case 'getMoreAnswers':
+	        	$answers = $this->dbConnection->getAnswers($data['questionId'], $data['after']);
+	        	if($answers)
+			        return json_encode(['success' => true, 'answers' => $answers]);
+		        else return json_encode(['success' => false]);
+		        break;
             case 'submitQuestion':
                 if(
                     !isset($data['questionTitle']) ||

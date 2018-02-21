@@ -23,7 +23,7 @@ $answers  = $params['comments'];
 
                     <button type="submit" class="btn btn-primary btn-sm float-right">Post answer <i class="far fa-share-square"></i></button>
                 </div>
-                <input type="hidden" name="questionId" value="<?php echo $question['questionId'] ?>">
+                <input id="questionId" type="hidden" name="questionId" value="<?php echo $question['questionId'] ?>">
             </form>
         </div>
     </div>
