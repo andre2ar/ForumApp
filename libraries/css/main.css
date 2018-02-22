@@ -108,3 +108,17 @@
     margin-top: 3rem;
     margin-bottom: 4rem;
 }
+
+#searchArea{
+    margin-top: 1rem;
+}
+
+#searchArea input{
+    width: 79%;
+    margin-right: 1rem;
+}
+
+#searchArea select{
+    width: 63%;
+    margin-right: 1rem;
+}

@@ -18,6 +18,16 @@ class OperationsController
         $operation = $data['operation'];
 
         switch ($operation){
+	        case 'search':
+	        	if(isset($data['searchText']) && isset($data['where']))
+		        {
+		        	$result = $this->dbConnection->search($data['searchText'], $data['where']);
+			        return json_encode(['questions' => $result]);
+		        }else
+		        {
+			        return json_encode(['success' => false]);
+		        }
+	        	break;
 	        case 'editAnswer':
 	        	if(isset($data['answerText']) && isset($data['answerId']))
 		        {

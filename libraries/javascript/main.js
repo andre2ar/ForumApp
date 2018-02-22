@@ -80,7 +80,6 @@ $(function () {
             contentType: false
         }).done(function (result) {
             result = JSON.parse(result);
-            console.log(result);
             let answerTextItem = $("#answerText");
 
             if(result.commentId !== false)
@@ -359,21 +358,81 @@ $(function () {
         });
     });
 
+    /* Search button */
+    $("#searchButton").click(function (event) {
+        event.preventDefault();
+
+        let whatSearch = $("#searchText").val();
+        doSearch(whatSearch, 'text');
+    });
+
+    $("#searchCategoryButton").click(function (event) {
+        event.preventDefault();
+        let whatSearch = $("#categoryToSearch").val();
+        doSearch(whatSearch, 'category');
+    });
+
+    function doSearch(whatSearch, where)
+    {
+        if(whatSearch.length > 0)
+        {
+            $.ajax({
+                method: "POST",
+                url: './controller/OperationController.php',
+                data: {
+                    searchText: whatSearch,
+                    where: where,
+                    operation: 'search'
+                }
+            }).done(function (result) {
+                result = JSON.parse(result);
+
+                if(result.questions !== false)
+                {
+                    $(".card_edit:visible").each(function (index, item) {
+                        $(item).remove();
+                    });
+                    addQuestions(result.questions);
+                }else
+                {
+                    swal({
+                        title: "Error",
+                        text: "No questions found",
+                        icon: "error",
+                    });
+                }
+            });
+
+            $(window).off('scroll');
+        }
+    }
+
     /********************************************** Auxiliar ********************************************************/
     /* Add questions dinamically*/
     function addQuestions(questions) {
-        questions.forEach(function(currentValue){
-            $(".card_edit:first").clone()
-                .insertAfter(".card_edit:last");
+        console.log(questions);
+        if(Array.isArray(questions))
+        {
+            questions.forEach(function(question){
+                addQuestionToPage(question);
+            });
+        }else{
+            addQuestionToPage(questions);
+        }
+    }
 
-            let lastCard = $(".card_edit:last");
-            $(lastCard).find('h5').text(currentValue.questionTitle);
-            $(lastCard).find("p").text(currentValue.questionDetails);
-            $(lastCard).find(".category span").text(currentValue.questionCategory);
-            $(lastCard).find("a").prop("href", 'open_question?question_id='+currentValue.questionId);
+    function addQuestionToPage(question)
+    {
+        $(".card_edit:first").clone()
+            .insertAfter(".card_edit:last");
 
-            $(lastCard).show("slow");
-        });
+        let lastCard = $(".card_edit:last");
+        $(lastCard).find('h5').text(question.questionTitle);
+        $(lastCard).find("p").text(question.questionDetails);
+        $(lastCard).find(".category span").text(question.questionCategory);
+        $(lastCard).find("a").prop("href", 'open_question?question_id='+question.questionId);
+
+        $(lastCard).show("slow");
     }
 
     function addQuestionBoard(title, details, category, id) {

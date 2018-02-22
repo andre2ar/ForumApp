@@ -140,6 +140,23 @@ class DB
 	    return $preparedSQL->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function search($searchText, $where)
+    {
+    	if($where == 'text')
+	    {
+		    $sql = "SELECT * FROM questions WHERE questionTitle LIKE '%".$searchText."%' OR questionDetails LIKE '%".$searchText."%' ORDER BY questionCreationTime DESC";
+	    }else if($where == 'category')
+	    {
+		    $sql = "SELECT * FROM questions WHERE questions.questionCategory LIKE '".$searchText."' ORDER BY questionCreationTime DESC";
+	    }
+
+	    $preparedSQL = $this->dbConnection->prepare($sql);
+
+	    $preparedSQL->execute();
+
+	    return $preparedSQL->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getQuestion($question_id)
     {
     	$sql = "SELECT * FROM questions WHERE questionId = ".$question_id;
