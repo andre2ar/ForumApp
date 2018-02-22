@@ -21,6 +21,7 @@
             <button id="loginLogoutButton"
                     class="btn <?php if (isset($user)) echo 'btn-secondary'; else echo 'btn-outline-light';?>"
                     data-user="<?php if(isset($user)) {echo "<i class='fas fa-user'></i> "; echo $user;} ?>"
+                    data-user-id="<?php if(isset($_SESSION) && isset($_SESSION['forumAppUserId']))echo $_SESSION['forumAppUserId']; ?>"
             >
                 <?php
                 if(isset($user))

@@ -64,15 +64,19 @@ function genQuestionBox($title, $details, $category, $question_id, $comments_cou
 	<?php
 }
 
-function genAnswerBox($userId, $userName, $answerText, $answerId, $visibility = 'block')
+function genAnswerBox($userName, $answerText, $answerId, $userId = null, $visibility = 'block')
 {
+    if($userId === null)
+        $editVisibility = 'none';
+    else $editVisibility = 'block';
+
     ?>
     <div class="answer-box" data-answer-id="<?php echo $answerId; ?>" data-user-id="<?php echo $userId; ?>" style="display: <?php echo $visibility; ?>">
         <h4><?php echo $userName; ?></h4>
 	    <?php
-	    if(isset($_SESSION['forumAppUserId']) && $_SESSION['forumAppUserId'] === $userId){
+	    if($userId === null || (isset($_SESSION['forumAppUserId']) && $_SESSION['forumAppUserId'] === $userId)){
 		    ?>
-            <button data-answer-id="<?php echo $answerId; ?>" class="btn btn-outline-primary btn-sm float-right editAnswerButton">
+            <button data-answer-id="<?php echo $answerId; ?>" class="btn btn-outline-primary btn-sm float-right editAnswerButton" style="display: <?php echo $editVisibility; ?>;">
                 <i class="far fa-edit"></i> Edit answer
             </button>
 	    <?php } ?>
@@ -80,15 +84,18 @@ function genAnswerBox($userId, $userName, $answerText, $answerId, $visibility = 
         <p data-answer-id="<?php echo $answerId;?>">
             <span><?php echo $answerText; ?></span>
         </p>
-
-        <div class="editAnswerArea" data-answer-id="<?php echo $answerId;?>" style="display: none;">
-            <form>
-                <div class="form-group">
-                    <textarea rows="4" data-answer-id="<?php echo $answerId; ?>" class="form-control" name="editAnswer"><?php echo $answerText; ?></textarea>
-                </div>
-                <button type="button" data-answer-id="<?php echo $answerId; ?>" class="btn btn-primary btn-sm float-right saveEditAnswerButton">Save answer <i class="far fa-save"></i></button>
-            </form>
-        </div>
+        <?php
+        if($userId === null || (isset($_SESSION['forumAppUserId']) && $_SESSION['forumAppUserId'] === $userId)){
+            ?>
+            <div class="editAnswerArea" data-answer-id="<?php echo $answerId;?>" style="display: none;">
+                <form>
+                    <div class="form-group">
+                        <textarea rows="4" data-answer-id="<?php echo $answerId; ?>" class="form-control" name="editAnswer"><?php echo $answerText; ?></textarea>
+                    </div>
+                    <button type="button" data-answer-id="<?php echo $answerId; ?>" class="btn btn-primary btn-sm float-right saveEditAnswerButton">Save answer <i class="far fa-save"></i></button>
+                </form>
+            </div>
+        <?php } ?>
         <hr>
     </div>
     <?php

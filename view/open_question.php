@@ -85,10 +85,10 @@ $categories = returnCategories();
     <div class="col-lg-12">
         <h3>Answers</h3><br>
         <?php
-        genAnswerBox('', '','', '', 'none');
+        genAnswerBox('', '','', null, 'none');
         foreach ($answers as $answer)
         {
-	        genAnswerBox($answer['userId'],explode("@", $answer['userEmail'])[0], $answer['answerText'], $answer['answerId']);
+	        genAnswerBox(explode("@", $answer['userEmail'])[0], $answer['answerText'], $answer['answerId'], $answer['userId']);
         }
         if(count($answers) === 0){
         ?>

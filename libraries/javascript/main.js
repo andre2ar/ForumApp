@@ -320,10 +320,13 @@ $(function () {
     });
 
     /* Edit comment */
-    $(".saveEditAnswerButton").click(function () {
+    $(document).on("click",".saveEditAnswerButton", function () {
         let answerId = $(this).attr("data-answer-id"),
             answerEdited = $("textarea[data-answer-id='"+answerId+"']").val();
 
+        let buttonParent  = $(this).parent().parent().parent();
+
+        console.log($("p[data-answer-id='"+answerId+"'] span").length);
         $.ajax({
             method: "POST",
             url: './controller/OperationController.php',
@@ -338,7 +341,7 @@ $(function () {
             {
                 $("p[data-answer-id='"+answerId+"'] span").text($("textarea[data-answer-id='"+answerId+"']").val());
                 $("p[data-answer-id='"+answerId+"']").show("fast");
-                $("div[data-answer-id='"+answerId+"'] div").hide('fast');
+                $("div[data-answer-id='"+answerId+"'] .editAnswerArea").hide('fast');
 
                 swal({
                     title: "Success",
@@ -389,15 +392,28 @@ $(function () {
 
     /* Add answers dinamically*/
     function answerAddToPage(userId, userName, answerText, answerId) {
+        let currentUserId = $("#loginLogoutButton").attr('data-user-id');
         $(".answer-box:first").clone()
             .insertAfter(".answer-box:first");
 
         let newAnswer = $(".answer-box:eq(1)");
 
         $(newAnswer).find("h4").text(userName);
-        $(newAnswer).find("p").text(answerText);
+        $(newAnswer).find("p span").text(answerText);
+        $(newAnswer).find("p").attr("data-answer-id", answerId);
         $(newAnswer).attr("data-answer-id", answerId);
+        $(newAnswer).find('button').attr("data-answer-id", answerId);
         $(newAnswer).attr("data-user-id", userId);
+
+        if(userId === currentUserId)
+        {
+            $(newAnswer).find('button').attr("data-answer-id", answerId);
+            $(newAnswer).find('div').attr("data-answer-id", answerId);
+            $(newAnswer).find('div textarea').attr("data-answer-id", answerId);
+            $(newAnswer).find('div textarea').val(answerText);
+
+            $(newAnswer).find('button').show();
+        }
 
         $(".alert").hide();
 
@@ -405,6 +421,7 @@ $(function () {
     }
 
     function addAnswers(answers) {
+        let currentUserId = $("#loginLogoutButton").attr('data-user-id');
         answers.forEach(function (answer) {
             $(".answer-box:first").clone()
                 .insertAfter(".answer-box:last");
@@ -412,9 +429,21 @@ $(function () {
             let newAnswer = $(".answer-box:last");
 
             $(newAnswer).find("h4").text(answer.userEmail.split("@")[0]);
-            $(newAnswer).find("p").text(answer.answerText);
+            $(newAnswer).find("p span").text(answer.answerText);
+            $(newAnswer).find("p").attr("data-answer-id", answer.answerId);
             $(newAnswer).attr("data-answer-id", answer.answerId);
+            $(newAnswer).find('button').attr("data-answer-id", answer.answerId);
             $(newAnswer).attr("data-user-id", answer.userId);
+
+            if(answer.userId === currentUserId)
+            {
+                $(newAnswer).find('button').attr("data-answer-id", answer.answerId);
+                $(newAnswer).find('div').attr("data-answer-id", answer.answerId);
+                $(newAnswer).find('div textarea').attr("data-answer-id", answer.answerId);
+                $(newAnswer).find('div textarea').val(answer.answerText);
+
+                $(newAnswer).find('button').show();
+            }
 
             $(newAnswer).show("slow");
         });
@@ -452,7 +481,7 @@ $(function () {
     });
 
     /* Show form to edit answer */
-    $(".editAnswerButton").click(function () {
+    $(document).on("click", ".editAnswerButton",function () {
         let answerId = $(this).attr("data-answer-id");
         $("p[data-answer-id='"+answerId+"']").hide("fast");
         $("div[data-answer-id='"+answerId+"']").show("fast");
