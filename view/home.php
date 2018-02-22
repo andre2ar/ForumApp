@@ -65,13 +65,25 @@
         genQuestionBox('', '', '', "", 0, 'none');
 
         $questions = $params['questions'];
-        foreach($questions as $question)
+        if(count($questions) > 0)
         {
-            genQuestionBox($question['questionTitle'], $question['questionDetails'], $question['questionCategory'], $question['questionId']);
+	        foreach($questions as $question)
+	        {
+		        genQuestionBox($question['questionTitle'], $question['questionDetails'], $question['questionCategory'], $question['questionId']);
+	        }
+        }else
+        {
+            ?>
+            <div id="noQuestionsAlert" class="alert alert-primary text-center" role="alert">
+                <h4 class="alert-heading">No questions :(</h4>
+                <p>What about our first question be your?</p>
+            </div>
+            <?php
         }
         ?>
         </div>
     </div>
+
     <input type="hidden" id="searchMade" value="false" name="searchMade">
     <input type="hidden" id="whereSearch" value="" name="whereSearch">
     <input type="hidden" id="whatSearch" value="" name="whatSearch">

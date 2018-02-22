@@ -442,6 +442,8 @@ $(function () {
         $(newCard).find(".category span").text(category);
         $(newCard).find("a").prop("href", 'open_question?question_id=' + id);
 
+        $("#noQuestionsAlert").hide("fast");
+
         $(newCard).show("slow");
     }
 
