@@ -72,4 +72,8 @@
         ?>
         </div>
     </div>
+    <input type="hidden" id="searchMade" value="false" name="searchMade">
+    <input type="hidden" id="whereSearch" value="" name="whereSearch">
+    <input type="hidden" id="whatSearch" value="" name="whatSearch">
+
 </div>

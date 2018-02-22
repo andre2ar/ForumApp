@@ -227,13 +227,22 @@ $(function () {
     function infinityScroll() {
         let cardsCount = $(".card_edit").length,
             answersCount = $(".answer-box").length,
-            itemDistance = 0, questionId = '', whereAdd, operation;
+            searchMade = $("#searchMade").val(),
+            itemDistance = 0, questionId = '', whereAdd, operation, whatSearch = '', whereSearch = '';
 
         if(cardsCount > 0)
         {
             itemDistance = ".card_edit:last";
             whereAdd = ".card_edit";
-            operation = "getMoreQuestions";
+            if(searchMade == 'false')
+            {
+                operation = "getMoreQuestions";
+            }else if(searchMade == 'true')
+            {
+                operation = "search";
+                whatSearch = $("#whatSearch").val();
+                whereSearch = $("#whereSearch").val();
+            }
         }
         else if(answersCount > 0)
         {
@@ -256,6 +265,8 @@ $(function () {
                 data: {
                     operation: operation,
                     after: $(whereAdd).length - 1,
+                    searchText: whatSearch,
+                    where: whereSearch,
                     questionId: questionId
                 }
             }).done(function (result) {
@@ -263,11 +274,10 @@ $(function () {
 
                 if(result.success === true)
                 {
-                    if (cardsCount > 0)
+                    if (cardsCount > 0 || searchMade == 'true')
                         addQuestions(result.questions);
                     else if (answersCount > 0)
                         addAnswers(result.answers);
-
 
                     $(window).on("scroll", infinityScroll);
                 }
@@ -325,7 +335,6 @@ $(function () {
 
         let buttonParent  = $(this).parent().parent().parent();
 
-        console.log($("p[data-answer-id='"+answerId+"'] span").length);
         $.ajax({
             method: "POST",
             url: './controller/OperationController.php',
@@ -358,22 +367,12 @@ $(function () {
         });
     });
 
-    /* Search button */
-    $("#searchButton").click(function (event) {
-        event.preventDefault();
-
-        let whatSearch = $("#searchText").val();
-        doSearch(whatSearch, 'text');
-    });
-
-    $("#searchCategoryButton").click(function (event) {
-        event.preventDefault();
-        let whatSearch = $("#categoryToSearch").val();
-        doSearch(whatSearch, 'category');
-    });
-
     function doSearch(whatSearch, where)
     {
+        $("#searchMade").val("true");
+        $("#whatSearch").val(whatSearch);
+        $("#whereSearch").val(where);
+
         if(whatSearch.length > 0)
         {
             $.ajax({
@@ -402,15 +401,12 @@ $(function () {
                     });
                 }
             });
-
-            $(window).off('scroll');
         }
     }
 
     /********************************************** Auxiliar ********************************************************/
     /* Add questions dinamically*/
     function addQuestions(questions) {
-        console.log(questions);
         if(Array.isArray(questions))
         {
             questions.forEach(function(question){
@@ -507,6 +503,29 @@ $(function () {
             $(newAnswer).show("slow");
         });
     }
+
+    /* Search button */
+    $("#searchButton").click(function (event) {
+        event.preventDefault();
+
+        $(window).on("scroll", infinityScroll);
+
+        let whatSearch = $("#searchText").val();
+        doSearch(whatSearch, 'text');
+    });
+
+    $("#searchCategoryButton").click(function (event) {
+        event.preventDefault();
+
+        $(window).on("scroll", infinityScroll);
+
+        let whatSearch = $("#categoryToSearch").val();
+        doSearch(whatSearch, 'category');
+    });
+
+    $("#categoryToSearch").change(function () {
+        $("#searchCategoryButton").click();
+    });
 
     /* Redirect user to login page if not logged */
     $("#answerQuestion").click(function () {

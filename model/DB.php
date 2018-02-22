@@ -140,15 +140,23 @@ class DB
 	    return $preparedSQL->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function search($searchText, $where)
+    public function search($searchText, $where, $offset = 0, $how_many = 15)
     {
+	    $limit = " LIMIT ".$how_many;
+	    if($offset != 0)
+	    {
+		    $offset = " OFFSET ".$offset;
+	    }else $offset = '';
+
     	if($where == 'text')
 	    {
-		    $sql = "SELECT * FROM questions WHERE questionTitle LIKE '%".$searchText."%' OR questionDetails LIKE '%".$searchText."%' ORDER BY questionCreationTime DESC";
+		    $sql = "SELECT * FROM questions WHERE questionTitle LIKE '%".$searchText."%' OR questionDetails LIKE '%".$searchText."%'";
 	    }else if($where == 'category')
 	    {
-		    $sql = "SELECT * FROM questions WHERE questions.questionCategory LIKE '".$searchText."' ORDER BY questionCreationTime DESC";
+		    $sql = "SELECT * FROM questions WHERE questions.questionCategory LIKE '".$searchText."'";
 	    }
+
+	    $sql .= " ORDER BY questionCreationTime DESC".$limit.$offset;
 
 	    $preparedSQL = $this->dbConnection->prepare($sql);
 
