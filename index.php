@@ -9,7 +9,15 @@ include_once 'libraries/php/functions.php';
 date_default_timezone_set('America/Sao_Paulo');
 
 $requested_uri = $_SERVER['REQUEST_URI'];
-$router = new Router('forumApp');
+
+$dbOptions = [
+	'dbHost' => 'localhost',
+	'dbUser' => 'root',
+	'dbPassword' => '',
+	'dbName' => 'forumapp'
+];
+
+$router = new Router('forumApp', $dbOptions);
 
 session_start();
 

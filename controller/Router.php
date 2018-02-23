@@ -4,13 +4,13 @@ require './model/DB.php';
 class Router
 {
     public $db;
-    public function __construct($site_name = '')
+    public function __construct($site_name = '', $dbOptions)
     {
         if(!empty($site_name))
         {
             $this->site_name = $site_name;
         }
-        $this->db = new DB('localhost', 'root', '', 'forumapp');
+        $this->db = new DB($dbOptions['dbHost'], $dbOptions['dbUser'], $dbOptions['dbPassword'], $dbOptions['dbName']);
     }
 
     private function clearUrl($url){
@@ -35,7 +35,7 @@ class Router
 
             $intendendPlace = end($url);
 
-            if($intendendPlace === $this->site_name || $intendendPlace === 'home'){
+            if($intendendPlace === $this->site_name || $intendendPlace === 'home' || empty($intendendPlace)){
                 $questions = $this->db->getQuestions();
                 loadView('home', [ 'questions' => $questions]);
             }else if(strstr($intendendPlace, 'open_question'))
