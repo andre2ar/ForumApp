@@ -36,8 +36,8 @@ function returnCategories()
 function genQuestionBox($title, $details, $category, $questionId, $answersCount = 0, $visibility = 'block')
 {
 	?>
-	<div class="col-lg-4 card_edit" style="display: <?php echo $visibility;?>">
-		<div class="card" style="width: 23rem; height: 18rem">
+	<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 card_edit" style="display: <?php echo $visibility;?>">
+		<div class="card card-properties">
 			<div class="card-body">
 				<div style="height: 3rem;">
 					<h5 class="card-title module line-clamp-title"><?php echo $title; ?></h5>

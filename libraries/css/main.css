@@ -127,3 +127,27 @@
     width: 100%;
     margin-top: 1rem;
 }
+
+@media screen and (min-width: 1200px) {
+    .card-properties {
+        width: 23rem;
+    }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199px){
+    .card-properties {
+        width: 29rem;
+    }
+}
+
+@media screen and (max-width: 991px){
+    .card-properties {
+        width: 100%;
+        height: 20rem;
+    }
+}
+
+
+.card-properties{
+    height: 18rem
+}
