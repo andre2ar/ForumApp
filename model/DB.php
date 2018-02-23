@@ -115,7 +115,12 @@ class DB
 	    	$offset = " OFFSET ".$offset;
 	    }else $offset = '';
 
-        $sql = "SELECT * FROM questions ORDER BY questionCreationTime DESC".$limit.$offset;
+        $sql = "SELECT questions.*, COUNT(answerInQuestion) as answersCount 
+				FROM questions LEFT OUTER JOIN answers
+				ON questions.questionId = answers.answerInQuestion
+				GROUP BY questionId
+				ORDER BY questionCreationTime DESC".$limit.$offset;
+
         $preparedSQL = $this->dbConnection->prepare($sql);
         $preparedSQL->execute();
 

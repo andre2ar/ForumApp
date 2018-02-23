@@ -33,7 +33,7 @@ function returnCategories()
 	];
 }
 
-function genQuestionBox($title, $details, $category, $question_id, $comments_count = 0, $visibility = 'block')
+function genQuestionBox($title, $details, $category, $questionId, $answersCount = 0, $visibility = 'block')
 {
 	?>
 	<div class="col-lg-4 card_edit" style="display: <?php echo $visibility;?>">
@@ -46,7 +46,7 @@ function genQuestionBox($title, $details, $category, $question_id, $comments_cou
 				<p class="card-text module line-clamp-text" style="height: 9.3rem"><?php echo $details; ?></p>
 
 				<div class="text-center">
-					<span class="badge badge-secondary float-left"><span class="count_answers"><?php echo $comments_count?></span> answers</span>
+					<span class="badge badge-secondary float-left"><span class="answersCount"><?php echo $answersCount?></span> answers</span>
 					<span class="badge badge-primary category">
                         <i class="fa fa-compass"></i>
                         <span>
@@ -56,7 +56,9 @@ function genQuestionBox($title, $details, $category, $question_id, $comments_cou
                         </span>
                     </span>
 
-					<a href="open_question?question_id=<?php echo $question_id; ?>" class="card-link float-right">Open</a>
+					<a target="_blank" href="open_question?question_id=<?php echo $questionId; ?>" class="float-right">
+                        <button type="button" class="btn btn-outline-primary">Open</button>
+                    </a>
 				</div>
 			</div>
 		</div>

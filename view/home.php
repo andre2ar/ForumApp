@@ -69,7 +69,7 @@
         {
 	        foreach($questions as $question)
 	        {
-		        genQuestionBox($question['questionTitle'], $question['questionDetails'], $question['questionCategory'], $question['questionId']);
+		        genQuestionBox($question['questionTitle'], $question['questionDetails'], $question['questionCategory'], $question['questionId'], $question['answersCount']);
 	        }
         }else
         {

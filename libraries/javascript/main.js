@@ -410,14 +410,14 @@ $(function () {
         if(Array.isArray(questions))
         {
             questions.forEach(function(question){
-                addQuestionToPage(question);
+                addQuestionsToPage(question);
             });
         }else{
-            addQuestionToPage(questions);
+            addQuestionsToPage(questions);
         }
     }
 
-    function addQuestionToPage(question)
+    function addQuestionsToPage(question)
     {
         $(".card_edit:first").clone()
             .insertAfter(".card_edit:last");
@@ -427,7 +427,7 @@ $(function () {
         $(lastCard).find("p").text(question.questionDetails);
         $(lastCard).find(".category span").text(question.questionCategory);
         $(lastCard).find("a").prop("href", 'open_question?question_id='+question.questionId);
-
+        $(lastCard).find(".answersCount").text(question.answersCount);
         $(lastCard).show("slow");
     }
 
